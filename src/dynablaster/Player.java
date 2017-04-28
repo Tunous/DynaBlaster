@@ -1,6 +1,13 @@
 package dynablaster;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.image.ImageObserver;
+
 public class Player {
+
+    private final Image image;
 
     private int x;
     private int y;
@@ -8,6 +15,9 @@ public class Player {
     private Direction movementDirection = Direction.NONE;
 
     public Player(int spawnX, int spawnY) {
+        final Toolkit toolkit = Toolkit.getDefaultToolkit();
+        image = toolkit.getImage("gracz.png");
+
         x = spawnX * 16;
         y = spawnY * 16;
     }
@@ -27,18 +37,18 @@ public class Player {
     public void increaseSpeed() {
         speed += 1;
     }
-    
-    public interface GridChecker {
-        boolean canMoveTo(int tileX, int tileY);
+
+    public void draw(Graphics2D g, ImageObserver observer) {
+        g.drawImage(image, x + 13, y + 7, observer);
     }
 
-    public void move(GridChecker checker) {
+    public void move(Grid grid) {
         int tileX = (x + 8) / 16 + 1;
         int tileY = (y + 8) / 16 + 1;
 
         switch (movementDirection) {
             case UP:
-                if (checker.canMoveTo(tileX, tileY - 1)) {
+                if (grid.canMoveTo(tileX, tileY - 1)) {
                     if (align(true)) {
                         y -= speed;
                     }
@@ -47,7 +57,7 @@ public class Player {
                 }
                 break;
             case DOWN:
-                if (checker.canMoveTo(tileX, tileY + 1)) {
+                if (grid.canMoveTo(tileX, tileY + 1)) {
                     if (align(true)) {
                         y += speed;
                     }
@@ -56,7 +66,7 @@ public class Player {
                 }
                 break;
             case LEFT:
-                if (checker.canMoveTo(tileX - 1, tileY)) {
+                if (grid.canMoveTo(tileX - 1, tileY)) {
                     if (align(false)) {
                         x -= speed;
                     }
@@ -65,7 +75,7 @@ public class Player {
                 }
                 break;
             case RIGHT:
-                if (checker.canMoveTo(tileX + 1, tileY)) {
+                if (grid.canMoveTo(tileX + 1, tileY)) {
                     if (align(false)) {
                         x += speed;
                     }
@@ -73,7 +83,7 @@ public class Player {
                     align(true);
                 }
                 break;
-                
+
             default:
                 return;
         }
@@ -90,15 +100,15 @@ public class Player {
             x = 160;
         }
     }
-    
+
     private boolean align(boolean horizontal) {
         int pos = horizontal ? x : y;
         int mod = pos % 16;
-        
+
         if (mod == 0) {
             return true;
         }
-        
+
         if (mod < 8) {
             if (horizontal) {
                 x -= 1;
@@ -112,7 +122,7 @@ public class Player {
                 y += 1;
             }
         }
-        
+
         return false;
     }
 }
