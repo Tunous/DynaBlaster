@@ -13,6 +13,7 @@ import javax.swing.Timer;
 public class MainPanel extends JPanel {
 
     private final Image gracz;
+    private final Image indestructible;
     private int x;
     private int y;
     private final Timer moveTimer;
@@ -24,6 +25,7 @@ public class MainPanel extends JPanel {
 
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         gracz = toolkit.getImage("gracz.png");
+        indestructible = toolkit.getImage("indestructible.png");
 
         KeyListenerWrapper listener = KeyListenerWrapper.init(new KeyAdapter() {
             private int latestKeyPressedCode;
@@ -66,7 +68,7 @@ public class MainPanel extends JPanel {
                         }
                         break;
                     default:
-                        return;
+                        break;
                 }
             }
 
@@ -78,16 +80,16 @@ public class MainPanel extends JPanel {
             x += xDelta;
             y += yDelta;
 
-            if (y < 0) {
-                y = 0;
-            } else if (y + 23 > 230) {
-                y = 230 - 23;
+            if (y < 7) {
+                y = 7;
+            } else if (y + 25 > 192) {
+                y = 192 - 25;
             }
 
-            if (x < 0) {
-                x = 0;
-            } else if (x + 23 > 230) {
-                x = 230 - 23;
+            if (x < 13) {
+                x = 13;
+            } else if (x + 20 > 192) {
+                x = 192 - 20;
             }
 
             repaint();
@@ -104,15 +106,17 @@ public class MainPanel extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        setPreferredSize(new java.awt.Dimension(208, 208));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 208, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 208, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -121,6 +125,15 @@ public class MainPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.GREEN);
         g2.fillRect(0, 0, 23 * 10, 23 * 10);
+        
+        for (int x = 0; x < 13; x++) {
+            for (int y = 0; y < 13; y++) {
+                if (x == 0 || y == 0 || x == 12 || y == 12 || x % 2 == 0 && y % 2 == 0) {
+                    g2.drawImage(indestructible, x * 16, y * 16, this);
+                }
+            }
+        }
+        
         g2.drawImage(gracz, x, y, this);
 
         Toolkit.getDefaultToolkit().sync();

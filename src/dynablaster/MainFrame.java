@@ -17,7 +17,6 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         
-        mainPanel.setFocusable(true);
         mainPanel.requestFocusInWindow();
     }
 
@@ -33,16 +32,19 @@ public class MainFrame extends javax.swing.JFrame {
         mainPanel = new dynablaster.MainPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Dyna Blaster");
+        setPreferredSize(new java.awt.Dimension(208, 208));
+        setResizable(false);
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 208, Short.MAX_VALUE)
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 208, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
