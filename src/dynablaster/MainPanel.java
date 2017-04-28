@@ -13,9 +13,9 @@ import javax.swing.Timer;
 public class MainPanel extends JPanel implements ActionListener {
 
     private final Timer moveTimer;
-
-    private Player player = new Player(0, 0);
-    private Grid grid = new Grid();
+    private final Player player = new Player(0, 0);
+    private final Grid grid = new Grid();
+    private final Bombs bombs = new Bombs();
 
     public MainPanel() {
         initComponents();
@@ -43,10 +43,10 @@ public class MainPanel extends JPanel implements ActionListener {
                         latestKeyPressedCode = e.getKeyCode();
                         break;
                     case KeyEvent.VK_SPACE:
-                        int xTile = (player.getX() + 8) / 16 + 1;
-                        int yTile = (player.getY() + 8) / 16 + 1;
+                        int x = (player.getX() + 8) / 16 + 1;
+                        int y = (player.getY() + 8) / 16 + 1;
 
-                        grid.setTile(xTile, yTile, Tile.BOMB);
+                        bombs.placeBomb(x, y);
                         break;
                     default:
                         break;
@@ -80,6 +80,7 @@ public class MainPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ActionEvent) {
         player.move(grid);
+        bombs.update();
 
         repaint();
     }
@@ -115,6 +116,7 @@ public class MainPanel extends JPanel implements ActionListener {
 
         grid.draw(g2, this);
         player.draw(g2, this);
+        bombs.draw(g2, this);
 
         Toolkit.getDefaultToolkit().sync();
     }

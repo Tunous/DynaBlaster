@@ -1,6 +1,5 @@
 package dynablaster;
 
-import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -17,7 +16,6 @@ public class Grid {
     private final Tile tiles[] = new Tile[TILES];
     
     private final Image indestructible;
-    private final Image bomb;
     private final Image grass;
     private final Image grassShadow;
     private final Image destructible;
@@ -25,7 +23,6 @@ public class Grid {
     public Grid() {
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         indestructible = toolkit.getImage("indestructible.png");
-        bomb = toolkit.getImage("bomb.png");
         grass = toolkit.getImage("grass.png");
         grassShadow = toolkit.getImage("grass-shadow.png");
         destructible = toolkit.getImage("destructible.png");
@@ -60,15 +57,12 @@ public class Grid {
     }
     
     private boolean isLockedPoint(int x, int y) {
-        if (x == 1 && y == 1 ||
+        return x == 1 && y == 1 ||
                 x == 2 && y == 1 ||
                 x == 1 && y == 2 ||
                 x == WIDTH - 2 && y == WIDTH - 2 ||
                 x == WIDTH - 3 && y == WIDTH - 2 ||
-                x == WIDTH - 2 && y == WIDTH - 3) {
-            return true;
-        }
-        return false;
+                x == WIDTH - 2 && y == WIDTH - 3;
     }
     
     public final void setTile(int x, int y, Tile tile) {
@@ -109,18 +103,6 @@ public class Grid {
                     tileImage = grass;
                 }
                 g.drawImage(tileImage, x * TILE_SIZE, y * TILE_SIZE, observer);
-
-                Image image = null;
-                switch (getTile(x, y)) {
-                    case BOMB:
-                        image = bomb;
-                        break;
-                    default:
-                        break;
-                }
-                if (image != null) {
-                    g.drawImage(image, x * Grid.TILE_SIZE, y * Grid.TILE_SIZE, observer);
-                }
             }
         }
     }
