@@ -12,7 +12,7 @@ public class Player {
     private int x;
     private int y;
     private int speed = 1;
-    private int bombs = 1;
+    private int bombs = 5;
     private Direction movementDirection = Direction.NONE;
 
     public Player(int spawnX, int spawnY) {
