@@ -13,6 +13,7 @@ public class Player {
     private int y;
     private int speed = 1;
     private int bombs = 5;
+    private int bombRange = 5;
     private Direction movementDirection = Direction.NONE;
 
     public Player(int spawnX, int spawnY) {
@@ -39,8 +40,12 @@ public class Player {
         speed += 1;
     }
     
-    public void placedBomb() {
+    public Bomb placeBomb(int bombX, int bombY) {
+        if (!canPlaceBombs()) return null;
+        
+        Bomb bomb = new Bomb(this, bombX, bombY, bombRange);
         bombs -= 1;
+        return bomb;
     }
     
     public void restoredBomb() {

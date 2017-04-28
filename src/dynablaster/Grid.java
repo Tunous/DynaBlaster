@@ -107,11 +107,13 @@ public class Grid {
         }
     }
 
-    public void destroyTile(int x, int y) {
-        if (!isValidPosition(x, y)) return;
+    public boolean destroyTile(int x, int y) {
+        if (!isValidPosition(x, y)) return false;
         
         if (getTile(x, y) == Tile.DESTRUCTIBLE) {
             setTile(x, y, Tile.GRASS);
+            return true;
         }
+        return false;
     }
 }

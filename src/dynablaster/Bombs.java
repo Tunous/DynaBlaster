@@ -10,7 +10,6 @@ import java.util.List;
 public class Bombs {
 
     private final ArrayList<Bomb> bombs = new ArrayList<>();
-    private final Object bombsLock = new Object();
 
     private final Image bombImage;
 
@@ -24,19 +23,19 @@ public class Bombs {
             return;
         }
 
-        synchronized (bombsLock) {
+        synchronized (bombs) {
             for (Bomb bomb : bombs) {
                 if (bomb.x == x && bomb.y == y) {
                     return;
                 }
             }
 
-            bombs.add(new Bomb(player, x, y));
+            bombs.add(player.placeBomb(x, y));
         }
     }
 
     public void update(Grid grid) {
-        synchronized (bombsLock) {
+        synchronized (bombs) {
             List<Bomb> clone = (List<Bomb>) bombs.clone();
             for (Bomb bomb : clone) {
                 if (bomb.shouldExplode()) {
@@ -47,19 +46,38 @@ public class Bombs {
     }
 
     private void explodeBomb(Bomb bomb, Grid grid) {
-        if (bomb.hasExploded()) return;
-        
+        if (bomb.hasExploded()) {
+            return;
+        }
+
         bomb.exploded();
         bombs.remove(bomb);
 
-        destroyAt(bomb, grid, bomb.x, bomb.y - 1);
-        destroyAt(bomb, grid, bomb.x, bomb.y + 1);
-        destroyAt(bomb, grid, bomb.x - 1, bomb.y);
-        destroyAt(bomb, grid, bomb.x + 1, bomb.y);
+        for (int i = 0; i < bomb.range; i++) {
+            if (destroyAt(bomb, grid, bomb.x, bomb.y - i)) {
+                break;
+            }
+        }
+        for (int i = 0; i < bomb.range; i++) {
+            if (destroyAt(bomb, grid, bomb.x, bomb.y + i)) {
+                break;
+            }
+        }
+        for (int i = 0; i < bomb.range; i++) {
+            if (destroyAt(bomb, grid, bomb.x - i, bomb.y)) {
+                break;
+            }
+
+        }
+        for (int i = 0; i < bomb.range; i++) {
+            if (destroyAt(bomb, grid, bomb.x + i, bomb.y)) {
+                break;
+            }
+        }
     }
 
-    private void destroyAt(Bomb bomb, Grid grid, int x, int y) {
-        grid.destroyTile(x, y);
+    private boolean destroyAt(Bomb bomb, Grid grid, int x, int y) {
+        if (grid.destroyTile(x, y)) return true;
 
         List<Bomb> clone = (List<Bomb>) bombs.clone();
         for (Bomb otherBomb : clone) {
@@ -67,12 +85,15 @@ public class Bombs {
                     && otherBomb.x == x
                     && otherBomb.y == y) {
                 explodeBomb(otherBomb, grid);
+                return true;
             }
         }
+        
+        return false;
     }
 
     public void draw(Graphics2D g, ImageObserver observer) {
-        synchronized (bombsLock) {
+        synchronized (bombs) {
             for (Bomb bomb : bombs) {
                 g.drawImage(bombImage,
                         bomb.x * Grid.TILE_SIZE,

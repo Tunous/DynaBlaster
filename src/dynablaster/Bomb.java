@@ -9,14 +9,14 @@ public class Bomb {
     public final long placementTime;
     public final int x;
     public final int y;
+    public final int range;
 
-    public Bomb(Player owner, int x, int y) {
+    public Bomb(Player owner, int x, int y, int range) {
         this.owner = owner;
         this.x = x;
         this.y = y;
+        this.range = range;
         placementTime = System.currentTimeMillis();
-        
-        owner.placedBomb();
     }
 
     public boolean shouldExplode() {
