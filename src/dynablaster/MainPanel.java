@@ -77,19 +77,41 @@ public class MainPanel extends JPanel {
         addKeyListener(listener);
 
         moveTimer = new Timer(17, (ActionEvent) -> {
-            x += xDelta;
-            y += yDelta;
+            int xTile = x / 16;
+            int yTile = y / 16;
 
-            if (y < 7) {
-                y = 7;
-            } else if (y + 25 > 192) {
-                y = 192 - 25;
+            if (xDelta != 0) {
+                if (y % 16 != 0) {
+                    if (yTile % 2 == 0) {
+                        y -= 1;
+                    } else {
+                        y += 1;
+                    }
+                } else if (yTile % 2 == 0) {
+                    x += xDelta;
+                }
+            } else if (yDelta != 0) {
+                if (x % 16 != 0) {
+                    if (xTile % 2 == 0) {
+                        x -= 1;
+                    } else {
+                        x += 1;
+                    }
+                } else if (xTile % 2 == 0) {
+                    y += yDelta;
+                }
             }
 
-            if (x < 13) {
-                x = 13;
-            } else if (x + 20 > 192) {
-                x = 192 - 20;
+            if (y < 0) {
+                y = 0;
+            } else if (y > 160) {
+                y = 160;
+            }
+
+            if (x < 0) {
+                x = 0;
+            } else if (x > 160) {
+                x = 160;
             }
 
             repaint();
@@ -122,10 +144,12 @@ public class MainPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.GREEN);
         g2.fillRect(0, 0, 23 * 10, 23 * 10);
-        
+
         for (int x = 0; x < 13; x++) {
             for (int y = 0; y < 13; y++) {
                 if (x == 0 || y == 0 || x == 12 || y == 12 || x % 2 == 0 && y % 2 == 0) {
@@ -133,8 +157,8 @@ public class MainPanel extends JPanel {
                 }
             }
         }
-        
-        g2.drawImage(gracz, x, y, this);
+
+        g2.drawImage(gracz, x + 13, y + 7, this);
 
         Toolkit.getDefaultToolkit().sync();
     }
