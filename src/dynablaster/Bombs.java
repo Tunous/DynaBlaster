@@ -17,7 +17,11 @@ public class Bombs {
         bombImage = toolkit.getImage("bomb.png");
     }
     
-    public void placeBomb(int x, int y) {
+    public void placeBomb(Player player, int x, int y) {
+        if (!player.canPlaceBombs()) {
+            return;
+        }
+        
         synchronized (bombsLock) {
             for (Bomb bomb : bombs) {
                 if (bomb.x == x && bomb.y == y) {
@@ -25,7 +29,7 @@ public class Bombs {
                 }
             }
             
-            bombs.add(new Bomb(x, y));
+            bombs.add(new Bomb(player, x, y));
         }
     }
     
@@ -34,6 +38,7 @@ public class Bombs {
             for (int i = bombs.size() - 1; i >= 0; i--) {
                 Bomb bomb = bombs.get(i);
                 if (bomb.shouldExplode()) {
+                    bomb.exploded();
                     bombs.remove(i);
                 }
             }

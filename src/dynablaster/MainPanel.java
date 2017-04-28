@@ -46,7 +46,7 @@ public class MainPanel extends JPanel implements ActionListener {
                         int x = (player.getX() + 8) / 16 + 1;
                         int y = (player.getY() + 8) / 16 + 1;
 
-                        bombs.placeBomb(x, y);
+                        bombs.placeBomb(player, x, y);
                         break;
                     default:
                         break;

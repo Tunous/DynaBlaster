@@ -12,6 +12,7 @@ public class Player {
     private int x;
     private int y;
     private int speed = 1;
+    private int bombs = 1;
     private Direction movementDirection = Direction.NONE;
 
     public Player(int spawnX, int spawnY) {
@@ -36,6 +37,18 @@ public class Player {
 
     public void increaseSpeed() {
         speed += 1;
+    }
+    
+    public void placedBomb() {
+        bombs -= 1;
+    }
+    
+    public void restoredBomb() {
+        bombs += 1;
+    }
+    
+    public boolean canPlaceBombs() {
+        return bombs > 0;
     }
 
     public void draw(Graphics2D g, ImageObserver observer) {
