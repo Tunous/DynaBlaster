@@ -1,6 +1,5 @@
 package dynablaster;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -10,7 +9,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class MainPanel extends JPanel {
+public class MainPanel extends JPanel implements Player.GridChecker {
 
     private final Image gracz;
     private final Image indestructible;
@@ -42,6 +41,9 @@ public class MainPanel extends JPanel {
                 }
             }
         }
+        
+        grid[3][2] = 1;
+        grid[3][3] = 1;
 
         KeyListenerWrapper listener = KeyListenerWrapper.init(new KeyAdapter() {
             private int latestKeyPressedCode;
@@ -97,7 +99,7 @@ public class MainPanel extends JPanel {
         addKeyListener(listener);
 
         moveTimer = new Timer(17, (ActionEvent) -> {
-            player.move();
+            player.move(this);
 
             repaint();
         });
@@ -162,6 +164,12 @@ public class MainPanel extends JPanel {
         g2.drawImage(gracz, player.getX() + 13, player.getY() + 7, this);
 
         Toolkit.getDefaultToolkit().sync();
+    }
+
+    @Override
+    public boolean canMoveTo(int tileX, int tileY) {
+        if (tileX < 0 || tileY < 0 || tileX > 12 || tileY > 12) return false;
+        return grid[tileX][tileY] != 1;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
