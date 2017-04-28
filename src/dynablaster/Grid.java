@@ -119,6 +119,7 @@ public class Grid {
             setTile(x, y, Tile.GRASS);
             return true;
         }
-        return false;
+        
+        return getTile(x, y) == Tile.INDESTRUCTIBLE;
     }
 }
