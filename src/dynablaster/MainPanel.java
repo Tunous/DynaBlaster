@@ -13,7 +13,7 @@ import javax.swing.Timer;
 public class MainPanel extends JPanel implements ActionListener {
 
     private final Timer moveTimer;
-    private final Player player = new Player(0, 0);
+    private final Player player = new Player(PlayerColor.GREEN, 0, 0);
     private final Grid grid = new Grid();
     private final Bombs bombs = new Bombs();
 

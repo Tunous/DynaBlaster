@@ -6,7 +6,7 @@ import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
 
 public class Player {
-
+    
     private final Image image;
 
     private int x;
@@ -16,10 +16,13 @@ public class Player {
     private int bombRange = 5;
     private boolean dead = false;
     private Direction movementDirection = Direction.NONE;
+    private final PlayerColor color;
 
-    public Player(int spawnX, int spawnY) {
+    public Player(PlayerColor color, int spawnX, int spawnY) {
+        this.color = color;
+        
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        image = toolkit.getImage("gracz.png");
+        image = toolkit.getImage("player-" + color.name + ".png");
 
         x = spawnX * Grid.TILE_SIZE;
         y = spawnY * Grid.TILE_SIZE;
