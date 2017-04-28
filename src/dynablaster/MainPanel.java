@@ -3,12 +3,14 @@ package dynablaster;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class MainPanel extends JPanel {
+public class MainPanel extends JPanel implements ActionListener {
 
     private final Timer moveTimer;
 
@@ -71,12 +73,15 @@ public class MainPanel extends JPanel {
 
         addKeyListener(listener);
 
-        moveTimer = new Timer(17, (ActionEvent) -> {
-            player.move(grid);
-
-            repaint();
-        });
+        moveTimer = new Timer(17, this);
         moveTimer.start();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ActionEvent) {
+        player.move(grid);
+
+        repaint();
     }
 
     /**

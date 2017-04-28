@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
+import java.util.Random;
 
 public class Grid {
     public static final int TILE_SIZE = 16;
@@ -19,6 +20,7 @@ public class Grid {
     private final Image bomb;
     private final Image grass;
     private final Image grassShadow;
+    private final Image destructible;
 
     public Grid() {
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -26,11 +28,13 @@ public class Grid {
         bomb = toolkit.getImage("bomb.png");
         grass = toolkit.getImage("grass.png");
         grassShadow = toolkit.getImage("grass-shadow.png");
+        destructible = toolkit.getImage("destructible.png");
         
         generateGrid();
     }
 
     private void generateGrid() {
+        Random random = new Random();
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < WIDTH; y++) {
                 Tile tile;
@@ -40,6 +44,8 @@ public class Grid {
                 } else if (x % 2 == 0 && y % 2 == 0) {
                     // Middle columns
                     tile = Tile.INDESTRUCTIBLE;
+                } else if (!isLockedPoint(x, y) && random.nextInt(3) != 0) {
+                    tile = Tile.DESTRUCTIBLE;
                 } else {
                     // Grass
                     tile = Tile.GRASS;
@@ -51,6 +57,18 @@ public class Grid {
         
         setTile(3, 2, Tile.INDESTRUCTIBLE);
         setTile(3, 3, Tile.INDESTRUCTIBLE);
+    }
+    
+    private boolean isLockedPoint(int x, int y) {
+        if (x == 1 && y == 1 ||
+                x == 2 && y == 1 ||
+                x == 1 && y == 2 ||
+                x == WIDTH - 2 && y == WIDTH - 2 ||
+                x == WIDTH - 3 && y == WIDTH - 2 ||
+                x == WIDTH - 2 && y == WIDTH - 3) {
+            return true;
+        }
+        return false;
     }
     
     public final void setTile(int x, int y, Tile tile) {
@@ -73,7 +91,8 @@ public class Grid {
         if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
             return false;
         }
-        return getTile(x, y) != Tile.INDESTRUCTIBLE;
+        final Tile tile = getTile(x, y);
+        return tile != Tile.INDESTRUCTIBLE && tile != Tile.DESTRUCTIBLE;
     }
     
     public void draw(Graphics2D g, ImageObserver observer) {
@@ -82,7 +101,9 @@ public class Grid {
                 Image tileImage;
                 if (getTile(x, y) == Tile.INDESTRUCTIBLE) {
                     tileImage = indestructible;
-                } else if (y > 0 && getTile(x, y - 1) == Tile.INDESTRUCTIBLE) {
+                } else if (getTile(x, y) == Tile.DESTRUCTIBLE) {
+                    tileImage = destructible;
+                } else if (y > 0 && !canMoveTo(x, y - 1)) {
                     tileImage = grassShadow;
                 } else {
                     tileImage = grass;
