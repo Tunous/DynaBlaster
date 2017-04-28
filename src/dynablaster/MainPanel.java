@@ -80,7 +80,7 @@ public class MainPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ActionEvent) {
         player.move(grid);
-        bombs.update(grid);
+        bombs.update(grid, player);
 
         repaint();
     }

@@ -3,9 +3,9 @@ package dynablaster;
 public class Bomb {
 
     private final Player owner;
-    
+
     private boolean hasExploded = false;
-    
+
     public final long placementTime;
     public final int x;
     public final int y;
@@ -22,7 +22,7 @@ public class Bomb {
     public boolean shouldExplode() {
         return System.currentTimeMillis() - placementTime >= 2000;
     }
-    
+
     public void exploded() {
         hasExploded = true;
         owner.restoredBomb();

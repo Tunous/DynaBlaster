@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 /**
  * A simple, small and easy to use KeyListener wrapper to fix the famous Linux
  * key repeat *bug*.
- * 
+ *
  * Taken from: https://gist.github.com/rjeschke/1183826
  *
  * @author René Jeschke (rene_jeschke@yahoo.de)
@@ -21,17 +21,17 @@ public final class KeyListenerWrapper implements KeyListener, Runnable {
      * The listener to delegate key events to.
      */
     final KeyListener wrappedListener;
-    
+
     /**
      * Our background thread.
      */
     private final Thread watcher;
-    
+
     /**
      * Our key event queue.
      */
     private ArrayBlockingQueue<KeyEvent> keyEvents = new ArrayBlockingQueue<>(2048);
-    
+
     /**
      * Whether to post KeyEvents using invokeLater or not.
      */

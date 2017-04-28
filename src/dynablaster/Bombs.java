@@ -34,18 +34,18 @@ public class Bombs {
         }
     }
 
-    public void update(Grid grid) {
+    public void update(Grid grid, Player player) {
         synchronized (bombs) {
             List<Bomb> clone = (List<Bomb>) bombs.clone();
             for (Bomb bomb : clone) {
                 if (bomb.shouldExplode()) {
-                    explodeBomb(bomb, grid);
+                    explodeBomb(bomb, grid, player);
                 }
             }
         }
     }
 
-    private void explodeBomb(Bomb bomb, Grid grid) {
+    private void explodeBomb(Bomb bomb, Grid grid, Player player) {
         if (bomb.hasExploded()) {
             return;
         }
@@ -54,41 +54,47 @@ public class Bombs {
         bombs.remove(bomb);
 
         for (int i = 0; i < bomb.range; i++) {
-            if (destroyAt(bomb, grid, bomb.x, bomb.y - i)) {
+            if (destroyAt(bomb, grid, player, bomb.x, bomb.y - i)) {
                 break;
             }
         }
         for (int i = 0; i < bomb.range; i++) {
-            if (destroyAt(bomb, grid, bomb.x, bomb.y + i)) {
+            if (destroyAt(bomb, grid, player, bomb.x, bomb.y + i)) {
                 break;
             }
         }
         for (int i = 0; i < bomb.range; i++) {
-            if (destroyAt(bomb, grid, bomb.x - i, bomb.y)) {
+            if (destroyAt(bomb, grid, player, bomb.x - i, bomb.y)) {
                 break;
             }
 
         }
         for (int i = 0; i < bomb.range; i++) {
-            if (destroyAt(bomb, grid, bomb.x + i, bomb.y)) {
+            if (destroyAt(bomb, grid, player, bomb.x + i, bomb.y)) {
                 break;
             }
         }
     }
 
-    private boolean destroyAt(Bomb bomb, Grid grid, int x, int y) {
-        if (grid.destroyTile(x, y)) return true;
+    private boolean destroyAt(Bomb bomb, Grid grid, Player player, int x, int y) {
+        if (grid.destroyTile(x, y)) {
+            return true;
+        }
+        
+        if (player.getTileX() == x && player.getTileY() == y) {
+            player.kill();
+        }
 
         List<Bomb> clone = (List<Bomb>) bombs.clone();
         for (Bomb otherBomb : clone) {
             if (otherBomb != bomb
                     && otherBomb.x == x
                     && otherBomb.y == y) {
-                explodeBomb(otherBomb, grid);
+                explodeBomb(otherBomb, grid, player);
                 return true;
             }
         }
-        
+
         return false;
     }
 
