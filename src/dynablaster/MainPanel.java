@@ -17,11 +17,9 @@ public class MainPanel extends JPanel {
     private final Image bomb;
     private final Image grass;
     private final Image grassShadow;
-    private int x;
-    private int y;
     private final Timer moveTimer;
-    private int xDelta;
-    private int yDelta;
+
+    private Player player = new Player(0, 0);
 
     private final int grid[][] = new int[13][13];
 
@@ -45,8 +43,6 @@ public class MainPanel extends JPanel {
             }
         }
 
-        grid[3][1] = 1;
-
         KeyListenerWrapper listener = KeyListenerWrapper.init(new KeyAdapter() {
             private int latestKeyPressedCode;
 
@@ -54,28 +50,24 @@ public class MainPanel extends JPanel {
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
-                        xDelta = 0;
-                        yDelta = -2;
+                        player.setMovementDirection(Direction.UP);
                         latestKeyPressedCode = e.getKeyCode();
                         break;
                     case KeyEvent.VK_DOWN:
-                        xDelta = 0;
-                        yDelta = 2;
+                        player.setMovementDirection(Direction.DOWN);
                         latestKeyPressedCode = e.getKeyCode();
                         break;
                     case KeyEvent.VK_LEFT:
-                        xDelta = -2;
-                        yDelta = 0;
+                        player.setMovementDirection(Direction.LEFT);
                         latestKeyPressedCode = e.getKeyCode();
                         break;
                     case KeyEvent.VK_RIGHT:
-                        xDelta = 2;
-                        yDelta = 0;
+                        player.setMovementDirection(Direction.RIGHT);
                         latestKeyPressedCode = e.getKeyCode();
                         break;
                     case KeyEvent.VK_SPACE:
-                        int xTile = (x + 8) / 16 + 1;
-                        int yTile = (y + 8) / 16 + 1;
+                        int xTile = (player.getX() + 8) / 16 + 1;
+                        int yTile = (player.getY() + 8) / 16 + 1;
 
                         grid[xTile][yTile] = 2;
                         break;
@@ -92,8 +84,7 @@ public class MainPanel extends JPanel {
                     case KeyEvent.VK_LEFT:
                     case KeyEvent.VK_RIGHT:
                         if (latestKeyPressedCode == e.getKeyCode()) {
-                            xDelta = 0;
-                            yDelta = 0;
+                            player.setMovementDirection(Direction.NONE);
                         }
                         break;
                     default:
@@ -106,42 +97,7 @@ public class MainPanel extends JPanel {
         addKeyListener(listener);
 
         moveTimer = new Timer(17, (ActionEvent) -> {
-            int xTile = x / 16;
-            int yTile = y / 16;
-
-            if (xDelta != 0) {
-                if (y % 16 != 0) {
-                    if (yTile % 2 == 0) {
-                        y -= 1;
-                    } else {
-                        y += 1;
-                    }
-                } else if (yTile % 2 == 0) {
-                    x += xDelta;
-                }
-            } else if (yDelta != 0) {
-                if (x % 16 != 0) {
-                    if (xTile % 2 == 0) {
-                        x -= 1;
-                    } else {
-                        x += 1;
-                    }
-                } else if (xTile % 2 == 0) {
-                    y += yDelta;
-                }
-            }
-
-            if (y < 0) {
-                y = 0;
-            } else if (y > 160) {
-                y = 160;
-            }
-
-            if (x < 0) {
-                x = 0;
-            } else if (x > 160) {
-                x = 160;
-            }
+            player.move();
 
             repaint();
         });
@@ -179,22 +135,31 @@ public class MainPanel extends JPanel {
 
         for (int x = 0; x < 13; x++) {
             for (int y = 0; y < 13; y++) {
-                Image image = grass;
+                Image tileImage;
                 if (grid[x][y] == 1) {
-                    image = indestructible;
-                } else if (grid[x][y] == 2) {
-                    image = bomb;
-                } else if (grid[x][y - 1] == 1) {
-                    image = grassShadow;
+                    tileImage = indestructible;
+                } else if (y > 0 && grid[x][y - 1] == 1) {
+                    tileImage = grassShadow;
+                } else {
+                    tileImage = grass;
                 }
+                g2.drawImage(tileImage, x * 16, y * 16, this);
 
+                Image image = null;
+                switch (grid[x][y]) {
+                    case 2:
+                        image = bomb;
+                        break;
+                    default:
+                        break;
+                }
                 if (image != null) {
                     g2.drawImage(image, x * 16, y * 16, this);
                 }
             }
         }
 
-        g2.drawImage(gracz, x + 13, y + 7, this);
+        g2.drawImage(gracz, player.getX() + 13, player.getY() + 7, this);
 
         Toolkit.getDefaultToolkit().sync();
     }
