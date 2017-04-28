@@ -14,6 +14,7 @@ public class MainPanel extends JPanel {
 
     private final Image gracz;
     private final Image indestructible;
+    private final Image bomb;
     private final Image grass;
     private final Image grassShadow;
     private int x;
@@ -30,6 +31,7 @@ public class MainPanel extends JPanel {
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         gracz = toolkit.getImage("gracz.png");
         indestructible = toolkit.getImage("indestructible.png");
+        bomb = toolkit.getImage("bomb.png");
         grass = toolkit.getImage("grass.png");
         grassShadow = toolkit.getImage("grass-shadow.png");
 
@@ -43,28 +45,39 @@ public class MainPanel extends JPanel {
             }
         }
 
+        grid[3][1] = 1;
+
         KeyListenerWrapper listener = KeyListenerWrapper.init(new KeyAdapter() {
             private int latestKeyPressedCode;
 
             @Override
             public void keyPressed(KeyEvent e) {
-                latestKeyPressedCode = e.getKeyCode();
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
                         xDelta = 0;
                         yDelta = -2;
+                        latestKeyPressedCode = e.getKeyCode();
                         break;
                     case KeyEvent.VK_DOWN:
                         xDelta = 0;
                         yDelta = 2;
+                        latestKeyPressedCode = e.getKeyCode();
                         break;
                     case KeyEvent.VK_LEFT:
                         xDelta = -2;
                         yDelta = 0;
+                        latestKeyPressedCode = e.getKeyCode();
                         break;
                     case KeyEvent.VK_RIGHT:
                         xDelta = 2;
                         yDelta = 0;
+                        latestKeyPressedCode = e.getKeyCode();
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        int xTile = (x + 8) / 16 + 1;
+                        int yTile = (y + 8) / 16 + 1;
+
+                        grid[xTile][yTile] = 2;
                         break;
                     default:
                         break;
@@ -169,6 +182,8 @@ public class MainPanel extends JPanel {
                 Image image = grass;
                 if (grid[x][y] == 1) {
                     image = indestructible;
+                } else if (grid[x][y] == 2) {
+                    image = bomb;
                 } else if (grid[x][y - 1] == 1) {
                     image = grassShadow;
                 }
