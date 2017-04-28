@@ -14,11 +14,15 @@ public class MainPanel extends JPanel {
 
     private final Image gracz;
     private final Image indestructible;
+    private final Image grass;
+    private final Image grassShadow;
     private int x;
     private int y;
     private final Timer moveTimer;
     private int xDelta;
     private int yDelta;
+
+    private final int grid[][] = new int[13][13];
 
     public MainPanel() {
         initComponents();
@@ -26,6 +30,18 @@ public class MainPanel extends JPanel {
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         gracz = toolkit.getImage("gracz.png");
         indestructible = toolkit.getImage("indestructible.png");
+        grass = toolkit.getImage("grass.png");
+        grassShadow = toolkit.getImage("grass-shadow.png");
+
+        for (int x = 0; x < 13; x++) {
+            for (int y = 0; y < 13; y++) {
+                if (x == 0 || y == 0 || x == 12 || y == 12 || x % 2 == 0 && y % 2 == 0) {
+                    grid[x][y] = 1;
+                } else {
+                    grid[x][y] = 0;
+                }
+            }
+        }
 
         KeyListenerWrapper listener = KeyListenerWrapper.init(new KeyAdapter() {
             private int latestKeyPressedCode;
@@ -147,13 +163,18 @@ public class MainPanel extends JPanel {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.GREEN);
-        g2.fillRect(0, 0, 23 * 10, 23 * 10);
 
         for (int x = 0; x < 13; x++) {
             for (int y = 0; y < 13; y++) {
-                if (x == 0 || y == 0 || x == 12 || y == 12 || x % 2 == 0 && y % 2 == 0) {
-                    g2.drawImage(indestructible, x * 16, y * 16, this);
+                Image image = grass;
+                if (grid[x][y] == 1) {
+                    image = indestructible;
+                } else if (grid[x][y - 1] == 1) {
+                    image = grassShadow;
+                }
+
+                if (image != null) {
+                    g2.drawImage(image, x * 16, y * 16, this);
                 }
             }
         }
