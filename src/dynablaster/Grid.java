@@ -51,9 +51,6 @@ public class Grid {
                 setTile(x, y, tile);
             }
         }
-        
-        setTile(3, 2, Tile.INDESTRUCTIBLE);
-        setTile(3, 3, Tile.INDESTRUCTIBLE);
     }
     
     private boolean isLockedPoint(int x, int y) {
@@ -82,11 +79,14 @@ public class Grid {
     }
 
     public boolean canMoveTo(int x, int y) {
-        if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
-            return false;
-        }
+        if (!isValidPosition(x, y)) return false;
+        
         final Tile tile = getTile(x, y);
         return tile != Tile.INDESTRUCTIBLE && tile != Tile.DESTRUCTIBLE;
+    }
+
+    private boolean isValidPosition(int x, int y) {
+        return x >= 0 && y >= 0 && x < WIDTH && y < HEIGHT;
     }
     
     public void draw(Graphics2D g, ImageObserver observer) {
@@ -104,6 +104,14 @@ public class Grid {
                 }
                 g.drawImage(tileImage, x * TILE_SIZE, y * TILE_SIZE, observer);
             }
+        }
+    }
+
+    public void destroyTile(int x, int y) {
+        if (!isValidPosition(x, y)) return;
+        
+        if (getTile(x, y) == Tile.DESTRUCTIBLE) {
+            setTile(x, y, Tile.GRASS);
         }
     }
 }

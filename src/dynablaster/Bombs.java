@@ -33,16 +33,25 @@ public class Bombs {
         }
     }
     
-    public void update() {
+    public void update(Grid grid) {
         synchronized (bombsLock) {
             for (int i = bombs.size() - 1; i >= 0; i--) {
                 Bomb bomb = bombs.get(i);
                 if (bomb.shouldExplode()) {
-                    bomb.exploded();
+                    explodeBomb(bomb, grid);
                     bombs.remove(i);
                 }
             }
         }
+    }
+    
+    private void explodeBomb(Bomb bomb, Grid grid) {
+        bomb.exploded();
+        
+        grid.destroyTile(bomb.x, bomb.y - 1);
+        grid.destroyTile(bomb.x, bomb.y + 1);
+        grid.destroyTile(bomb.x - 1, bomb.y);
+        grid.destroyTile(bomb.x + 1, bomb.y);
     }
     
     public void draw(Graphics2D g, ImageObserver observer) {
