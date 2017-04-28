@@ -5,73 +5,22 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class MainPanel extends JPanel implements ActionListener {
 
     private final Timer moveTimer;
-    private final Player player = new Player(PlayerColor.GREEN, 0, 0);
-    private final Grid grid = new Grid();
-    private final Bombs bombs = new Bombs();
+    private final Grid grid;
+    private final Bombs bombs;
+    private final Players players;
 
     public MainPanel() {
         initComponents();
-
-        KeyListenerWrapper listener = KeyListenerWrapper.init(new KeyAdapter() {
-            private int latestKeyPressedCode;
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP:
-                        player.setMovementDirection(Direction.UP);
-                        latestKeyPressedCode = e.getKeyCode();
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        player.setMovementDirection(Direction.DOWN);
-                        latestKeyPressedCode = e.getKeyCode();
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        player.setMovementDirection(Direction.LEFT);
-                        latestKeyPressedCode = e.getKeyCode();
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                        player.setMovementDirection(Direction.RIGHT);
-                        latestKeyPressedCode = e.getKeyCode();
-                        break;
-                    case KeyEvent.VK_SPACE:
-                        int x = (player.getX() + 8) / 16 + 1;
-                        int y = (player.getY() + 8) / 16 + 1;
-
-                        bombs.placeBomb(player, x, y);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP:
-                    case KeyEvent.VK_DOWN:
-                    case KeyEvent.VK_LEFT:
-                    case KeyEvent.VK_RIGHT:
-                        if (latestKeyPressedCode == e.getKeyCode()) {
-                            player.setMovementDirection(Direction.NONE);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-        }, false);
-
-        addKeyListener(listener);
+        
+        grid = new Grid();
+        bombs = new Bombs();
+        players = new Players(this, bombs);
 
         moveTimer = new Timer(17, this);
         moveTimer.start();
@@ -79,8 +28,8 @@ public class MainPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ActionEvent) {
-        player.move(grid);
-        bombs.update(grid, player);
+        players.update(grid);
+        bombs.update(grid, players);
 
         repaint();
     }
@@ -115,7 +64,7 @@ public class MainPanel extends JPanel implements ActionListener {
         Graphics2D g2 = (Graphics2D) g;
 
         grid.draw(g2, this);
-        player.draw(g2, this);
+        players.draw(g2, this);
         bombs.draw(g2, this);
 
         Toolkit.getDefaultToolkit().sync();

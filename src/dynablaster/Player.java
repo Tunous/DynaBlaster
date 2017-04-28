@@ -1,13 +1,6 @@
 package dynablaster;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.ImageObserver;
-
 public class Player {
-    
-    private final Image image;
 
     private int x;
     private int y;
@@ -16,13 +9,11 @@ public class Player {
     private int bombRange = 5;
     private boolean dead = false;
     private Direction movementDirection = Direction.NONE;
-    private final PlayerColor color;
+    
+    public final PlayerColor color;
 
     public Player(PlayerColor color, int spawnX, int spawnY) {
         this.color = color;
-        
-        final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        image = toolkit.getImage("player-" + color.name + ".png");
 
         x = spawnX * Grid.TILE_SIZE;
         y = spawnY * Grid.TILE_SIZE;
@@ -78,15 +69,7 @@ public class Player {
         return dead;
     }
 
-    public void draw(Graphics2D g, ImageObserver observer) {
-        if (dead) {
-            return;
-        }
-
-        g.drawImage(image, x + 13, y + 7, observer);
-    }
-
-    public void move(Grid grid) {
+    public void update(Grid grid) {
         int tileX = getTileX();
         int tileY = getTileY();
 

@@ -1,12 +1,12 @@
 package dynablaster;
 
 public enum PlayerColor {
-    WHITE("white"),
-    GREEN("green");
+    WHITE("player-white.png"),
+    GREEN("player-green.png");
     
-    public final String name;
+    public final String fileName;
     
-    PlayerColor(String name) {
-        this.name = name;
+    PlayerColor(String fileName) {
+        this.fileName = fileName;
     }
 }
