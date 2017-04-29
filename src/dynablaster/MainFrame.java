@@ -1,23 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dynablaster;
 
-/**
- *
- * @author luke
- */
 public class MainFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form MainFrame
-     */
     public MainFrame() {
         initComponents();
 
-        mainPanel.requestFocusInWindow();
+        gamePanel.requestFocusInWindow();
+        gamePanel.setFrame(this);
+    }
+    
+    public void showWinScreen() {
+        gamePanel.setVisible(false);
+    }
+    
+    public void showGameScreen() {
+        gamePanel.setVisible(true);
     }
 
     /**
@@ -29,23 +26,20 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainPanel = new dynablaster.MainPanel();
+        gamePanel = new dynablaster.MainPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Dyna Blaster");
-        setPreferredSize(new java.awt.Dimension(208, 208));
         setResizable(false);
 
-        mainPanel.setPreferredSize(new java.awt.Dimension(208, 208));
-
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
+        gamePanel.setLayout(gamePanelLayout);
+        gamePanelLayout.setHorizontalGroup(
+            gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 208, Short.MAX_VALUE)
         );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        gamePanelLayout.setVerticalGroup(
+            gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 208, Short.MAX_VALUE)
         );
 
@@ -55,13 +49,13 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -96,6 +90,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new MainFrame().setVisible(true);
             }
@@ -103,6 +98,6 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private dynablaster.MainPanel mainPanel;
+    private dynablaster.MainPanel gamePanel;
     // End of variables declaration//GEN-END:variables
 }

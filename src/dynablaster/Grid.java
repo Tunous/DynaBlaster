@@ -21,10 +21,10 @@ public class Grid {
     private final Image grassShadow;
     private final Image destructible;
     
-    private final Bombs bombs;
+    private final GameController controller;
 
-    public Grid(Bombs bombs) {
-        this.bombs = bombs;
+    public Grid(GameController controller) {
+        this.controller = controller;
         
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         indestructible = toolkit.getImage("indestructible.png");
@@ -92,7 +92,7 @@ public class Grid {
             return false;
         }
         
-        return !bombs.isBombAt(x, y);
+        return !controller.bombs.isBombAt(x, y);
     }
     
     private boolean isSolidBlockAt(int x, int y) {

@@ -8,30 +8,23 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class MainPanel extends JPanel implements ActionListener {
+public class MainPanel extends JPanel {
 
-    private final Timer moveTimer;
-    private final Grid grid;
-    private final Bombs bombs;
-    private final Players players;
+    private final GameController gameController;
+    private final Timer gameTimer;
 
     public MainPanel() {
         initComponents();
-        
-        bombs = new Bombs();
-        grid = new Grid(bombs);
-        players = new Players(this, bombs);
 
-        moveTimer = new Timer(17, this);
-        moveTimer.start();
+        gameController = new GameController();
+        gameController.registerKeyListener(this);
+
+        gameTimer = new Timer(17, new TickListener());
+        gameTimer.start();
     }
-
-    @Override
-    public void actionPerformed(ActionEvent ActionEvent) {
-        players.update(grid);
-        bombs.update(grid, players);
-
-        repaint();
+    
+    public void setFrame(MainFrame frame) {
+        gameController.setFrame(frame);
     }
 
     /**
@@ -62,12 +55,17 @@ public class MainPanel extends JPanel implements ActionListener {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
-
-        grid.draw(g2, this);
-        bombs.draw(g2, this);
-        players.draw(g2, this);
-
+        gameController.draw(g2, this);
         Toolkit.getDefaultToolkit().sync();
+    }
+
+    private class TickListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            gameController.update();
+            repaint();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

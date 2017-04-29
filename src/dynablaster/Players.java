@@ -6,7 +6,6 @@ import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
-import javax.swing.JPanel;
 
 public class Players extends KeyAdapter {
 
@@ -14,10 +13,10 @@ public class Players extends KeyAdapter {
     private final Player[] players;
     private final int[] latestKeyPresses;
     
-    private final Bombs bombs;
+    private final GameController controller;
 
-    public Players(JPanel panel, Bombs bombs) {
-        this.bombs = bombs;
+    public Players(GameController controller) {
+        this.controller = controller;
         
         players = new Player[2];
         players[0] = new Player(PlayerColor.WHITE, 0, 0);
@@ -30,10 +29,6 @@ public class Players extends KeyAdapter {
         }
         
         latestKeyPresses = new int[players.length];
-
-        KeyListenerWrapper listener = KeyListenerWrapper.init(this, false);
-
-        panel.addKeyListener(listener);
     }
 
     @Override
@@ -60,7 +55,7 @@ public class Players extends KeyAdapter {
                 int x = player.getTileX();
                 int y = player.getTileY();
 
-                bombs.placeBomb(player, x, y);
+                controller.bombs.placeBomb(player, x, y);
                 break;
                 
             case KeyEvent.VK_W:
@@ -84,7 +79,7 @@ public class Players extends KeyAdapter {
                 int gX = greenPlayer.getTileX();
                 int gY = greenPlayer.getTileY();
 
-                bombs.placeBomb(greenPlayer, gX, gY);
+                controller.bombs.placeBomb(greenPlayer, gX, gY);
                 break;
             default:
                 break;
@@ -115,9 +110,32 @@ public class Players extends KeyAdapter {
         }
     }
 
-    public void update(Grid grid) {
+    public void update() {
         for (Player player : players) {
-            player.update(grid);
+            player.update(controller.grid);
+        }
+        
+        checkWinner();
+    }
+
+    private void checkWinner() {
+        Player lastAlivePlayer = null;
+        int alivePlayersCount = 0;
+        
+        for (Player player : players) {
+            if (!player.isDead()) {
+                alivePlayersCount += 1;
+                if (alivePlayersCount > 1) {
+                    return;
+                }
+                lastAlivePlayer = player;
+            }
+        }
+        
+        if (alivePlayersCount == 1) {
+            controller.announceWinner(lastAlivePlayer);
+        } else {
+            controller.announceDraw();
         }
     }
 

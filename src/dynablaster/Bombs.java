@@ -12,8 +12,11 @@ public class Bombs {
     private final ArrayList<Bomb> bombs = new ArrayList<>();
 
     private final Image bombImage;
+    private final GameController controller;
 
-    public Bombs() {
+    public Bombs(GameController controller) {
+        this.controller = controller;
+        
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         bombImage = toolkit.getImage("bomb.png");
     }
@@ -34,18 +37,18 @@ public class Bombs {
         }
     }
 
-    public void update(Grid grid, Players players) {
+    public void update() {
         synchronized (bombs) {
             List<Bomb> clone = (List<Bomb>) bombs.clone();
             for (Bomb bomb : clone) {
                 if (bomb.shouldExplode()) {
-                    explodeBomb(bomb, grid, players);
+                    explodeBomb(bomb);
                 }
             }
         }
     }
 
-    private void explodeBomb(Bomb bomb, Grid grid, Players players) {
+    private void explodeBomb(Bomb bomb) {
         if (bomb.hasExploded()) {
             return;
         }
@@ -54,41 +57,41 @@ public class Bombs {
         bombs.remove(bomb);
 
         for (int i = 0; i < bomb.range; i++) {
-            if (destroyAt(bomb, grid, players, bomb.x, bomb.y - i)) {
+            if (destroyAt(bomb, bomb.x, bomb.y - i)) {
                 break;
             }
         }
         for (int i = 0; i < bomb.range; i++) {
-            if (destroyAt(bomb, grid, players, bomb.x, bomb.y + i)) {
+            if (destroyAt(bomb, bomb.x, bomb.y + i)) {
                 break;
             }
         }
         for (int i = 0; i < bomb.range; i++) {
-            if (destroyAt(bomb, grid, players, bomb.x - i, bomb.y)) {
+            if (destroyAt(bomb, bomb.x - i, bomb.y)) {
                 break;
             }
 
         }
         for (int i = 0; i < bomb.range; i++) {
-            if (destroyAt(bomb, grid, players, bomb.x + i, bomb.y)) {
+            if (destroyAt(bomb, bomb.x + i, bomb.y)) {
                 break;
             }
         }
     }
 
-    private boolean destroyAt(Bomb bomb, Grid grid, Players players, int x, int y) {
-        if (grid.destroyTile(x, y)) {
+    private boolean destroyAt(Bomb bomb, int x, int y) {
+        if (controller.grid.destroyTile(x, y)) {
             return true;
         }
         
-        players.killAt(x, y);
+        controller.players.killAt(x, y);
 
         List<Bomb> clone = (List<Bomb>) bombs.clone();
         for (Bomb otherBomb : clone) {
             if (otherBomb != bomb
                     && otherBomb.x == x
                     && otherBomb.y == y) {
-                explodeBomb(otherBomb, grid, players);
+                explodeBomb(otherBomb);
                 return true;
             }
         }
