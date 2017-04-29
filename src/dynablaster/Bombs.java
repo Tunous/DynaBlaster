@@ -106,4 +106,16 @@ public class Bombs {
             }
         }
     }
+
+    public boolean isBombAt(int x, int y) {
+        synchronized (bombs) {
+            for (Bomb bomb : bombs) {
+                if (bomb.x == x && bomb.y == y) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
 }

@@ -20,8 +20,12 @@ public class Grid {
     private final Image grass;
     private final Image grassShadow;
     private final Image destructible;
+    
+    private final Bombs bombs;
 
-    public Grid() {
+    public Grid(Bombs bombs) {
+        this.bombs = bombs;
+        
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         indestructible = toolkit.getImage("indestructible.png");
         grass = toolkit.getImage("grass.png");
@@ -83,9 +87,17 @@ public class Grid {
         if (!isValidPosition(x, y)) {
             return false;
         }
-
+        
+        if (isSolidBlockAt(x, y)) {
+            return false;
+        }
+        
+        return !bombs.isBombAt(x, y);
+    }
+    
+    private boolean isSolidBlockAt(int x, int y) {
         final Tile tile = getTile(x, y);
-        return tile != Tile.INDESTRUCTIBLE && tile != Tile.DESTRUCTIBLE;
+        return tile == Tile.INDESTRUCTIBLE || tile == Tile.DESTRUCTIBLE;
     }
 
     private boolean isValidPosition(int x, int y) {
@@ -100,7 +112,7 @@ public class Grid {
                     tileImage = indestructible;
                 } else if (getTile(x, y) == Tile.DESTRUCTIBLE) {
                     tileImage = destructible;
-                } else if (y > 0 && !canMoveTo(x, y - 1)) {
+                } else if (y > 0 && isSolidBlockAt(x, y - 1)) {
                     tileImage = grassShadow;
                 } else {
                     tileImage = grass;

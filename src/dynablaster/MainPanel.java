@@ -18,8 +18,8 @@ public class MainPanel extends JPanel implements ActionListener {
     public MainPanel() {
         initComponents();
         
-        grid = new Grid();
         bombs = new Bombs();
+        grid = new Grid(bombs);
         players = new Players(this, bombs);
 
         moveTimer = new Timer(17, this);
