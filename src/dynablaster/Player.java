@@ -40,7 +40,7 @@ public class Player {
     }
 
     public void increaseSpeed() {
-        speed += 1;
+        speed += Grid.SCALE;
     }
 
     public Bomb placeBomb(int bombX, int bombY) {
@@ -135,18 +135,20 @@ public class Player {
         if (mod == 0) {
             return true;
         }
+        
+        int alignSpeed = Math.min(mod, speed);
 
         if (mod < Grid.TILE_SIZE / 2) {
             if (horizontal) {
-                x -= 1;
+                x -= alignSpeed;
             } else {
-                y -= 1;
+                y -= alignSpeed;
             }
         } else {
             if (horizontal) {
-                x += 1;
+                x += alignSpeed;
             } else {
-                y += 1;
+                y += alignSpeed;
             }
         }
 
