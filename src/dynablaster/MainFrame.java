@@ -50,8 +50,10 @@ public class MainFrame extends javax.swing.JFrame {
         setTitle("Dyna Blaster");
         setResizable(false);
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(208, 208));
+        jPanel1.setPreferredSize(gamePanel.getPreferredSize());
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        endScreen.setPreferredSize(gamePanel.getPreferredSize());
 
         winInfoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         winInfoLabel.setText("Game Over!");
@@ -84,7 +86,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.add(endScreen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 210, 210));
+        jPanel1.add(endScreen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
@@ -103,11 +105,11 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();

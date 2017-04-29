@@ -150,10 +150,16 @@ public class Players extends KeyAdapter {
             if (player.isDead()) {
                 continue;
             }
+            
+            final Image image = playerImages[i];
+            final int width = image.getWidth(observer) * 2;
+            final int height = image.getHeight(observer) * 2;
 
-            g.drawImage(playerImages[i],
-                    player.getX() + 13,
-                    player.getY() + 9,
+            g.drawImage(image,
+                    player.getX() + 13 * 2,
+                    player.getY() + 9 * 2,
+                    width,
+                    height,
                     observer);
         }
     }

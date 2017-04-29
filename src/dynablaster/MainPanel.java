@@ -21,15 +21,15 @@ public class MainPanel extends JPanel {
     }
 
     private void initComponents() {
-        final int width = Grid.WIDTH * Grid.TILE_SIZE;
-        final int height = Grid.HEIGHT * Grid.TILE_SIZE;
-        final Dimension size = new Dimension(width, height);
-        setPreferredSize(size);
-
         gameController.registerKeyListener(this);
         gameTimer.start();
         
         addMouseListener(new MouseListener());
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return Grid.SIZE;
     }
     
     public void setFrame(MainFrame frame) {

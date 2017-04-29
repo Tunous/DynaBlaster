@@ -1,5 +1,6 @@
 package dynablaster;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -8,9 +9,10 @@ import java.util.Random;
 
 public class Grid {
 
-    public static final int TILE_SIZE = 16;
+    public static final int TILE_SIZE = 16 * 2;
     public static final int WIDTH = 13;
     public static final int HEIGHT = 13;
+    public static final Dimension SIZE = new Dimension(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE);
 
     private static final int TILES = WIDTH * HEIGHT;
 
@@ -119,7 +121,7 @@ public class Grid {
                 } else {
                     tileImage = grass;
                 }
-                g.drawImage(tileImage, x * TILE_SIZE, y * TILE_SIZE, observer);
+                g.drawImage(tileImage, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE,observer);
             }
         }
     }

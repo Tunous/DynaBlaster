@@ -117,14 +117,14 @@ public class Player {
 
         if (y < 0) {
             y = 0;
-        } else if (y > 160) {
-            y = 160;
+        } else if (y > Grid.SIZE.height) {
+            y = Grid.SIZE.height;
         }
 
         if (x < 0) {
             x = 0;
-        } else if (x > 160) {
-            x = 160;
+        } else if (x > Grid.SIZE.width) {
+            x = Grid.SIZE.width;
         }
     }
 
@@ -136,7 +136,7 @@ public class Player {
             return true;
         }
 
-        if (mod < 8) {
+        if (mod < Grid.TILE_SIZE / 2) {
             if (horizontal) {
                 x -= 1;
             } else {

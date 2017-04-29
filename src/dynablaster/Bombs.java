@@ -104,11 +104,16 @@ public class Bombs {
     }
 
     public void draw(Graphics2D g, ImageObserver observer) {
+        final int width = bombImage.getWidth(observer) * 2;
+        final int height = bombImage.getHeight(observer) * 2;
+        
         synchronized (bombs) {
             for (Bomb bomb : bombs) {
                 g.drawImage(bombImage,
                         bomb.x * Grid.TILE_SIZE,
                         bomb.y * Grid.TILE_SIZE,
+                        width,
+                        height,
                         observer);
             }
         }
