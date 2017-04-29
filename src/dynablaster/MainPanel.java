@@ -64,8 +64,8 @@ public class MainPanel extends JPanel implements ActionListener {
         Graphics2D g2 = (Graphics2D) g;
 
         grid.draw(g2, this);
-        players.draw(g2, this);
         bombs.draw(g2, this);
+        players.draw(g2, this);
 
         Toolkit.getDefaultToolkit().sync();
     }

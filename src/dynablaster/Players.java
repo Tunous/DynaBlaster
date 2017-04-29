@@ -130,7 +130,7 @@ public class Players extends KeyAdapter {
 
             g.drawImage(playerImages[i],
                     player.getX() + 13,
-                    player.getY() + 7,
+                    player.getY() + 9,
                     observer);
         }
     }
