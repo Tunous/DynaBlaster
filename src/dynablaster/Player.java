@@ -9,7 +9,7 @@ public class Player {
     private int bombRange = 5;
     private boolean dead = false;
     private Direction movementDirection = Direction.NONE;
-    
+
     public final PlayerColor color;
 
     public Player(PlayerColor color, int spawnX, int spawnY) {
@@ -18,11 +18,11 @@ public class Player {
         x = spawnX * Grid.TILE_SIZE;
         y = spawnY * Grid.TILE_SIZE;
     }
-    
+
     public int getTileX() {
         return (x + Grid.TILE_SIZE / 2) / Grid.TILE_SIZE + 1;
     }
-    
+
     public int getTileY() {
         return (y + Grid.TILE_SIZE / 2) / Grid.TILE_SIZE + 1;
     }
@@ -70,49 +70,29 @@ public class Player {
     }
 
     public void update(Grid grid) {
+        if (movementDirection == Direction.NONE) {
+            return;
+        }
+
         int tileX = getTileX();
         int tileY = getTileY();
 
+        int modX = x % Grid.TILE_SIZE;
+        int modY = y % Grid.TILE_SIZE;
+
         switch (movementDirection) {
             case UP:
-                if (grid.canMoveTo(tileX, tileY - 1)) {
-                    if (align(true)) {
-                        y -= speed;
-                    }
-                } else {
-                    align(false);
-                }
+                moveUp(grid, tileX, tileY, modX);
                 break;
             case DOWN:
-                if (grid.canMoveTo(tileX, tileY + 1)) {
-                    if (align(true)) {
-                        y += speed;
-                    }
-                } else {
-                    align(false);
-                }
+                moveDown(grid, tileX, tileY, modX);
                 break;
             case LEFT:
-                if (grid.canMoveTo(tileX - 1, tileY)) {
-                    if (align(false)) {
-                        x -= speed;
-                    }
-                } else {
-                    align(true);
-                }
+                moveLeft(grid, tileX, tileY, modY);
                 break;
             case RIGHT:
-                if (grid.canMoveTo(tileX + 1, tileY)) {
-                    if (align(false)) {
-                        x += speed;
-                    }
-                } else {
-                    align(true);
-                }
+                moveRight(grid, tileX, tileY, modY);
                 break;
-
-            default:
-                return;
         }
 
         if (y < 0) {
@@ -128,17 +108,124 @@ public class Player {
         }
     }
 
-    private boolean align(boolean horizontal) {
+    private void moveUp(Grid grid, int tileX, int tileY, int modX) {
+        if (grid.canMoveTo(tileX, tileY - 1)) {
+            // Move straight up
+            align(true, false, true);
+            return;
+        }
+
+        if (modX < Grid.TILE_SIZE / 2
+                && modX != 0
+                && grid.canMoveTo(tileX + 1, tileY - 1)) {
+            // Move right and up
+            align(true, true, true);
+            return;
+        }
+
+        if (modX >= Grid.TILE_SIZE / 2
+                && grid.canMoveTo(tileX - 1, tileY - 1)) {
+            // Move left and up
+            align(true, true, true);
+            return;
+        }
+        
+        // Only align vertically
+        align(false, false, false);
+    }
+
+    private void moveDown(Grid grid, int tileX, int tileY, int modX) {
+        if (grid.canMoveTo(tileX, tileY + 1)) {
+            // Move straight down
+            align(true, false, true);
+            return;
+        }
+
+        if (modX < Grid.TILE_SIZE / 2
+                && modX != 0
+                && grid.canMoveTo(tileX + 1, tileY + 1)) {
+            // Move right and down
+            align(true, true, true);
+            return;
+        }
+
+        if (modX >= Grid.TILE_SIZE / 2
+                && grid.canMoveTo(tileX - 1, tileY + 1)) {
+            // Move left and down
+            align(true, true, true);
+            return;
+        }
+        
+        // Only align vertically
+        align(false, false, false);
+    }
+
+    private void moveLeft(Grid grid, int tileX, int tileY, int mod) {
+        if (grid.canMoveTo(tileX - 1, tileY)) {
+            // Move straight left
+            align(false, false, true);
+            return;
+        }
+
+        if (mod < Grid.TILE_SIZE / 2
+                && mod != 0
+                && grid.canMoveTo(tileX - 1, tileY + 1)) {
+            // Move up and left
+            align(false, true, true);
+            return;
+        }
+
+        if (mod >= Grid.TILE_SIZE / 2
+                && grid.canMoveTo(tileX - 1, tileY - 1)) {
+            // Move down and left
+            align(false, true, true);
+            return;
+        }
+        
+        // Only align horizontally
+        align(true, false, false);
+    }
+
+    private void moveRight(Grid grid, int tileX, int tileY, int mod) {
+        if (grid.canMoveTo(tileX + 1, tileY)) {
+            // Move straight right
+            align(false, false, true);
+            return;
+        }
+
+        if (mod < Grid.TILE_SIZE / 2
+                && mod != 0
+                && grid.canMoveTo(tileX + 1, tileY + 1)) {
+            // Move up and right
+            align(false, true, true);
+            return;
+        }
+
+        if (mod >= Grid.TILE_SIZE / 2
+                && grid.canMoveTo(tileX + 1, tileY - 1)) {
+            // Move down and right
+            align(false, true, true);
+            return;
+        }
+        
+        // Only align horizontally
+        align(true, false, false);
+    }
+
+    private void align(boolean horizontal, boolean reverse, boolean moveIfAligned) {
         int pos = horizontal ? x : y;
         int mod = pos % Grid.TILE_SIZE;
 
         if (mod == 0) {
-            return true;
+            if (moveIfAligned) {
+                move();
+            }
+            return;
         }
-        
+
         int alignSpeed = Math.min(mod, speed);
 
-        if (mod < Grid.TILE_SIZE / 2) {
+        if (!reverse && mod < Grid.TILE_SIZE / 2 || reverse && mod >= Grid.TILE_SIZE / 2) {
             if (horizontal) {
                 x -= alignSpeed;
             } else {
@@ -151,7 +238,24 @@ public class Player {
                 y += alignSpeed;
             }
         }
+    }
 
-        return false;
+    private void move() {
+        switch (movementDirection) {
+            case UP:
+                y -= speed;
+                break;
+            case DOWN:
+                y += speed;
+                break;
+            case LEFT:
+                x -= speed;
+                break;
+            case RIGHT:
+                x += speed;
+                break;
+            default:
+                break;
+        }
     }
 }
