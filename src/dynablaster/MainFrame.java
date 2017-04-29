@@ -4,17 +4,16 @@ public class MainFrame extends javax.swing.JFrame {
 
     public MainFrame() {
         initComponents();
-
+        
+        endScreen.setVisible(false);
+        
         gamePanel.requestFocusInWindow();
         gamePanel.setFrame(this);
     }
     
-    public void showWinScreen() {
+    public void showVictoryScreen() {
         gamePanel.setVisible(false);
-    }
-    
-    public void showGameScreen() {
-        gamePanel.setVisible(true);
+        endScreen.setVisible(true);
     }
 
     /**
@@ -26,40 +25,85 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        endScreen = new javax.swing.JPanel();
+        winInfoLabel = new javax.swing.JLabel();
+        newGameButton = new javax.swing.JButton();
         gamePanel = new dynablaster.MainPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Dyna Blaster");
         setResizable(false);
 
+        jPanel1.setPreferredSize(new java.awt.Dimension(208, 208));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        winInfoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        winInfoLabel.setText("Game Over!");
+
+        newGameButton.setText("New Game");
+        newGameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newGameButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout endScreenLayout = new javax.swing.GroupLayout(endScreen);
+        endScreen.setLayout(endScreenLayout);
+        endScreenLayout.setHorizontalGroup(
+            endScreenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(endScreenLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(endScreenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(winInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(newGameButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        endScreenLayout.setVerticalGroup(
+            endScreenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(endScreenLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(winInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(newGameButton)
+                .addContainerGap())
+        );
+
+        jPanel1.add(endScreen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 210, 210));
+
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
         gamePanelLayout.setHorizontalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 208, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         gamePanelLayout.setVerticalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 208, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
+
+        jPanel1.add(gamePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameButtonActionPerformed
+        gamePanel.gameController.newGame();
+        gamePanel.setVisible(true);
+        endScreen.setVisible(false);
+        gamePanel.requestFocusInWindow();
+    }//GEN-LAST:event_newGameButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -98,6 +142,10 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel endScreen;
     private dynablaster.MainPanel gamePanel;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton newGameButton;
+    private javax.swing.JLabel winInfoLabel;
     // End of variables declaration//GEN-END:variables
 }
