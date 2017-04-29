@@ -9,12 +9,14 @@ import java.util.Random;
 
 public class Grid {
 
-    public static final int TILE_SIZE = 16 * 2;
-    public static final int WIDTH = 13;
-    public static final int HEIGHT = 13;
-    public static final Dimension SIZE = new Dimension(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE);
-
+    private static final int WIDTH = 13;
+    private static final int HEIGHT = 13;
     private static final int TILES = WIDTH * HEIGHT;
+    
+    public static final int SCALE = 2;
+    public static final int TILE_SIZE = 16 * SCALE;
+    public static final Dimension SIZE =
+            new Dimension(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE);
 
     private final Tile tiles[] = new Tile[TILES];
 

@@ -104,8 +104,8 @@ public class Bombs {
     }
 
     public void draw(Graphics2D g, ImageObserver observer) {
-        final int width = bombImage.getWidth(observer) * 2;
-        final int height = bombImage.getHeight(observer) * 2;
+        final int width = bombImage.getWidth(observer) * Grid.SCALE;
+        final int height = bombImage.getHeight(observer) * Grid.SCALE;
         
         synchronized (bombs) {
             for (Bomb bomb : bombs) {

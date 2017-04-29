@@ -152,12 +152,12 @@ public class Players extends KeyAdapter {
             }
             
             final Image image = playerImages[i];
-            final int width = image.getWidth(observer) * 2;
-            final int height = image.getHeight(observer) * 2;
+            final int width = image.getWidth(observer) * Grid.SCALE;
+            final int height = image.getHeight(observer) * Grid.SCALE;
 
             g.drawImage(image,
-                    player.getX() + 13 * 2,
-                    player.getY() + 9 * 2,
+                    player.getX() + 13 * Grid.SCALE,
+                    player.getY() + 9 * Grid.SCALE,
                     width,
                     height,
                     observer);
