@@ -31,7 +31,9 @@ public class Grid {
         grass = toolkit.getImage("grass.png");
         grassShadow = toolkit.getImage("grass-shadow.png");
         destructible = toolkit.getImage("destructible.png");
-
+    }
+    
+    public void newGame() {
         generateGrid();
     }
 

@@ -11,9 +11,24 @@ public class MainFrame extends javax.swing.JFrame {
         gamePanel.setFrame(this);
     }
     
-    public void showVictoryScreen() {
+    public void showVictoryScreen(Player winner) {
         gamePanel.setVisible(false);
         endScreen.setVisible(true);
+        
+        String winText;
+        if (winner == null) {
+            winText = "Draw!";
+        } else {
+            winText = winner.color.name() + " player has won!";
+        }
+        winInfoLabel.setText(winText);
+    }
+    
+    private void startNewGame() {
+        gamePanel.gameController.newGame();
+        gamePanel.setVisible(true);
+        endScreen.setVisible(false);
+        gamePanel.requestFocusInWindow();
     }
 
     /**
@@ -63,7 +78,7 @@ public class MainFrame extends javax.swing.JFrame {
             endScreenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(endScreenLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(winInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addComponent(winInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(newGameButton)
                 .addContainerGap())
@@ -99,10 +114,7 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameButtonActionPerformed
-        gamePanel.gameController.newGame();
-        gamePanel.setVisible(true);
-        endScreen.setVisible(false);
-        gamePanel.requestFocusInWindow();
+        startNewGame();
     }//GEN-LAST:event_newGameButtonActionPerformed
 
     /**

@@ -20,6 +20,10 @@ public class Bombs {
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         bombImage = toolkit.getImage("bomb.png");
     }
+    
+    public void newGame() {
+        bombs.clear();
+    }
 
     public void placeBomb(Player player, int x, int y) {
         if (!player.canPlaceBombs()) {

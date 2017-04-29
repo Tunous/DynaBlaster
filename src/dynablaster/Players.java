@@ -30,6 +30,11 @@ public class Players extends KeyAdapter {
         
         latestKeyPresses = new int[players.length];
     }
+    
+    public void newGame() {
+        players[0] = new Player(PlayerColor.WHITE, 0, 0);
+        players[1] = new Player(PlayerColor.GREEN, 10, 10);
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {

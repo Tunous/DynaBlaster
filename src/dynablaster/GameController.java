@@ -9,18 +9,22 @@ public class GameController {
     private boolean gameOver = false;
     private MainFrame frame;
 
-    public Grid grid;
-    public Bombs bombs;
-    public Players players;
+    public final Grid grid;
+    public final Bombs bombs;
+    public final Players players;
 
     public GameController() {
+        grid = new Grid(this);
+        bombs = new Bombs(this);
+        players = new Players(this);
+        
         newGame();
     }
 
     public final void newGame() {
-        grid = new Grid(this);
-        bombs = new Bombs(this);
-        players = new Players(this);
+        grid.newGame();
+        bombs.newGame();
+        players.newGame();
         
         gameOver = false;
     }
@@ -35,12 +39,12 @@ public class GameController {
 
     public void announceWinner(Player player) {
         gameOver = true;
-        frame.showVictoryScreen();
+        frame.showVictoryScreen(player);
     }
 
     public void announceDraw() {
         gameOver = true;
-        frame.showVictoryScreen();
+        frame.showVictoryScreen(null);
     }
 
     public void update() {
