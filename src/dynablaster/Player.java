@@ -74,158 +74,148 @@ public class Player {
             return;
         }
 
-        int tileX = getTileX();
-        int tileY = getTileY();
-
         int modX = x % Grid.TILE_SIZE;
         int modY = y % Grid.TILE_SIZE;
 
+        alignAndMove(grid, getTileX(), getTileY(), modX, modY);
+    }
+
+    /**
+     * Align the player on the grid and move once aligned.
+     *
+     * @param grid The game grid used to check for collisions.
+     * @param tileX The x position of the player, in tiles.
+     * @param tileY The y position of the player, in tiles.
+     * @param modX The horizontal miss-alignment of the player.
+     * @param modY The vertical miss-alignment of the player.
+     */
+    private void alignAndMove(Grid grid, int tileX, int tileY, int modX,
+            int modY) {
+        if (canMoveStraight(grid, tileX, tileY)) {
+            // - Align the player in axis opposite to the movement direction
+            // - Once aligned start moving
+            align(!movementDirection.isHorizontal(), false, true);
+            return;
+        }
+
+        int mod = movementDirection.isHorizontal() ? modY : modX;
+
+        final boolean canMoveToLeftSide = mod >= Grid.TILE_SIZE / 2
+                && canMoveToSide(grid, tileX, tileY, Direction.LEFT);
+        final boolean canMoveToRightSide = mod < Grid.TILE_SIZE / 2
+                && mod != 0
+                && canMoveToSide(grid, tileX, tileY, Direction.RIGHT);
+
+        // Player can't move in a straight line but is not centered and can be
+        // pushed to one side to start moving in a straight line
+        if (canMoveToLeftSide || canMoveToRightSide) {
+            // - Push the player to the block on the side
+            // - Once pushed and aligned start moving
+            align(!movementDirection.isHorizontal(), true, true);
+            return;
+        }
+
+        // Only align the player on direction of the movement.
+        // This makes sure that the player always moves as far as possible,
+        // even with high movement speed.
+        align(movementDirection.isHorizontal(), false, false);
+    }
+
+    /**
+     * Returns whether the player can move through the block located in front of
+     * him.
+     *
+     * @param grid The game grid used to check for collisions.
+     * @param tileX The x position of the player, in tiles.
+     * @param tileY The y position of the player, in tiles.
+     * @return <c>true</c> if the player can move; otherwise, <c>false</c>.
+     */
+    private boolean canMoveStraight(Grid grid, int tileX, int tileY) {
         switch (movementDirection) {
             case UP:
-                moveUp(grid, tileX, tileY, modX);
+                tileY -= 1;
                 break;
             case DOWN:
-                moveDown(grid, tileX, tileY, modX);
+                tileY += 1;
                 break;
             case LEFT:
-                moveLeft(grid, tileX, tileY, modY);
+                tileX -= 1;
                 break;
             case RIGHT:
-                moveRight(grid, tileX, tileY, modY);
+                tileX += 1;
                 break;
         }
 
-        if (y < 0) {
-            y = 0;
-        } else if (y > Grid.SIZE.height) {
-            y = Grid.SIZE.height;
-        }
-
-        if (x < 0) {
-            x = 0;
-        } else if (x > Grid.SIZE.width) {
-            x = Grid.SIZE.width;
-        }
+        return grid.canMoveTo(tileX, tileY);
     }
 
-    private void moveUp(Grid grid, int tileX, int tileY, int modX) {
-        if (grid.canMoveTo(tileX, tileY - 1)) {
-            // Move straight up
-            align(true, false, true);
-            return;
+    /**
+     * Returns whether the player can move through the block located next to the
+     * block in front of him.
+     *
+     * @param grid The game grid used to check for collisions.
+     * @param tileX The x position of the player, in tiles.
+     * @param tileY The y position of the player, in tiles.
+     * @param side If <c>Direction.RIGHT</c> check the block located in
+     * clockwise direction to the block in front of the player. Otherwise check
+     * the block in the counter-clockwise direction.
+     * @return <c>true</c> if the player can move; otherwise, <c>false</c>.
+     */
+    private boolean canMoveToSide(Grid grid, int tileX, int tileY,
+            Direction side) {
+
+        // Side must be a horizontal direction
+        assert side.isHorizontal();
+
+        boolean checkClockwise = side == Direction.RIGHT;
+
+        switch (movementDirection) {
+            case UP:
+                tileX += checkClockwise ? 1 : -1;
+                tileY -= 1;
+                break;
+            case DOWN:
+                tileX += checkClockwise ? 1 : -1;
+                tileY += 1;
+                break;
+            case LEFT:
+                tileX -= 1;
+                tileY += checkClockwise ? 1 : -1;
+                break;
+            case RIGHT:
+                tileX += 1;
+                tileY += checkClockwise ? 1 : -1;
+                break;
         }
 
-        if (modX < Grid.TILE_SIZE / 2
-                && modX != 0
-                && grid.canMoveTo(tileX + 1, tileY - 1)) {
-            // Move right and up
-            align(true, true, true);
-            return;
-        }
-
-        if (modX >= Grid.TILE_SIZE / 2
-                && grid.canMoveTo(tileX - 1, tileY - 1)) {
-            // Move left and up
-            align(true, true, true);
-            return;
-        }
-        
-        // Only align vertically
-        align(false, false, false);
+        return grid.canMoveTo(tileX, tileY);
     }
 
-    private void moveDown(Grid grid, int tileX, int tileY, int modX) {
-        if (grid.canMoveTo(tileX, tileY + 1)) {
-            // Move straight down
-            align(true, false, true);
-            return;
-        }
-
-        if (modX < Grid.TILE_SIZE / 2
-                && modX != 0
-                && grid.canMoveTo(tileX + 1, tileY + 1)) {
-            // Move right and down
-            align(true, true, true);
-            return;
-        }
-
-        if (modX >= Grid.TILE_SIZE / 2
-                && grid.canMoveTo(tileX - 1, tileY + 1)) {
-            // Move left and down
-            align(true, true, true);
-            return;
-        }
-        
-        // Only align vertically
-        align(false, false, false);
-    }
-
-    private void moveLeft(Grid grid, int tileX, int tileY, int mod) {
-        if (grid.canMoveTo(tileX - 1, tileY)) {
-            // Move straight left
-            align(false, false, true);
-            return;
-        }
-
-        if (mod < Grid.TILE_SIZE / 2
-                && mod != 0
-                && grid.canMoveTo(tileX - 1, tileY + 1)) {
-            // Move up and left
-            align(false, true, true);
-            return;
-        }
-
-        if (mod >= Grid.TILE_SIZE / 2
-                && grid.canMoveTo(tileX - 1, tileY - 1)) {
-            // Move down and left
-            align(false, true, true);
-            return;
-        }
-        
-        // Only align horizontally
-        align(true, false, false);
-    }
-
-    private void moveRight(Grid grid, int tileX, int tileY, int mod) {
-        if (grid.canMoveTo(tileX + 1, tileY)) {
-            // Move straight right
-            align(false, false, true);
-            return;
-        }
-
-        if (mod < Grid.TILE_SIZE / 2
-                && mod != 0
-                && grid.canMoveTo(tileX + 1, tileY + 1)) {
-            // Move up and right
-            align(false, true, true);
-            return;
-        }
-
-        if (mod >= Grid.TILE_SIZE / 2
-                && grid.canMoveTo(tileX + 1, tileY - 1)) {
-            // Move down and right
-            align(false, true, true);
-            return;
-        }
-        
-        // Only align horizontally
-        align(true, false, false);
-    }
-
-    private void align(boolean horizontal, boolean reverse, boolean moveIfAligned) {
+    /**
+     * Align the player to the grid and start moving if possible.
+     *
+     * @param horizontal If <c>true</c> move the player horizontally; otherwise
+     * move him vertically.
+     * @param reverse If <c>true</c> push the player away from his current
+     * position; otherwise align him to the center of the tile.
+     * @param moveIfAligned Whether the player should move once aligned.
+     */
+    private void align(boolean horizontal, boolean reverse,
+            boolean moveIfAligned) {
         int pos = horizontal ? x : y;
         int mod = pos % Grid.TILE_SIZE;
 
         if (mod == 0) {
             if (moveIfAligned) {
-                move();
+                moveInternal();
             }
             return;
         }
 
         int alignSpeed = Math.min(mod, speed);
 
-        if (!reverse && mod < Grid.TILE_SIZE / 2 || reverse && mod >= Grid.TILE_SIZE / 2) {
+        if (!reverse && mod < Grid.TILE_SIZE / 2
+                || reverse && mod >= Grid.TILE_SIZE / 2) {
             if (horizontal) {
                 x -= alignSpeed;
             } else {
@@ -240,7 +230,10 @@ public class Player {
         }
     }
 
-    private void move() {
+    /**
+     * Move the player without performing any checks.
+     */
+    private void moveInternal() {
         switch (movementDirection) {
             case UP:
                 y -= speed;
