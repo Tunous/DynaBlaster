@@ -164,19 +164,26 @@ public class Grid {
         if (!isValidPosition(x, y)) {
             return false;
         }
+        
+        final Tile tile = getTile(x, y);
 
-        if (getTile(x, y) == Tile.DESTRUCTIBLE) {
-            Tile tile = Tile.GRASS;
+        if (tile == Tile.DESTRUCTIBLE) {
+            Tile newTile = Tile.GRASS;
             if (RANDOM.nextInt(5) == 0) {
-                tile = RANDOM.nextInt(2) == 0
+                newTile = RANDOM.nextInt(2) == 0
                         ? Tile.POWERUP_BOMB : Tile.POWERUP_RANGE;
             }
 
-            setTile(x, y, tile);
+            setTile(x, y, newTile);
             return true;
         }
+        
+        // Destroy any hit powerups
+        if (tile == Tile.POWERUP_BOMB || tile == Tile.POWERUP_RANGE) {
+            setTile(x, y, Tile.GRASS);
+        }
 
-        return getTile(x, y) == Tile.INDESTRUCTIBLE;
+        return tile == Tile.INDESTRUCTIBLE;
     }
 
     public void collectPowerup(Player player) {
