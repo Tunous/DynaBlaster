@@ -4,17 +4,17 @@ public class MainFrame extends javax.swing.JFrame {
 
     public MainFrame() {
         initComponents();
-        
+
         endScreen.setVisible(false);
-        
+
         gamePanel.requestFocusInWindow();
         gamePanel.setFrame(this);
     }
-    
+
     public void showVictoryScreen(Player winner) {
         gamePanel.setVisible(false);
         endScreen.setVisible(true);
-        
+
         String winText;
         if (winner == null) {
             winText = "Draw!";
@@ -23,7 +23,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         winInfoLabel.setText(winText);
     }
-    
+
     private void startNewGame() {
         gamePanel.gameController.newGame();
         gamePanel.setVisible(true);

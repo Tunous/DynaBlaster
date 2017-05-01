@@ -16,11 +16,11 @@ public class Bombs {
 
     public Bombs(GameController controller) {
         this.controller = controller;
-        
+
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         bombImage = toolkit.getImage("bomb.png");
     }
-    
+
     public void newGame() {
         bombs.clear();
     }
@@ -87,7 +87,7 @@ public class Bombs {
         if (controller.grid.destroyTile(x, y)) {
             return true;
         }
-        
+
         controller.players.killAt(x, y);
 
         List<Bomb> clone = (List<Bomb>) bombs.clone();
@@ -106,7 +106,7 @@ public class Bombs {
     public void draw(Graphics2D g, ImageObserver observer) {
         final int width = bombImage.getWidth(observer) * Grid.SCALE;
         final int height = bombImage.getHeight(observer) * Grid.SCALE;
-        
+
         synchronized (bombs) {
             for (Bomb bomb : bombs) {
                 g.drawImage(bombImage,
@@ -127,7 +127,7 @@ public class Bombs {
                 }
             }
         }
-        
+
         return false;
     }
 }

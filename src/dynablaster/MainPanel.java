@@ -23,7 +23,7 @@ public class MainPanel extends JPanel {
     private void initComponents() {
         gameController.registerKeyListener(this);
         gameTimer.start();
-        
+
         addMouseListener(new MouseListener());
     }
 
@@ -31,7 +31,7 @@ public class MainPanel extends JPanel {
     public Dimension getPreferredSize() {
         return Grid.SIZE;
     }
-    
+
     public void setFrame(MainFrame frame) {
         gameController.setFrame(frame);
     }
@@ -44,7 +44,7 @@ public class MainPanel extends JPanel {
         gameController.draw(g2, this);
         Toolkit.getDefaultToolkit().sync();
     }
-    
+
     private class MouseListener extends MouseAdapter {
 
         @Override

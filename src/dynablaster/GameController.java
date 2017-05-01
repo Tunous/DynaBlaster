@@ -17,7 +17,7 @@ public class GameController {
         grid = new Grid(this);
         bombs = new Bombs(this);
         players = new Players(this);
-        
+
         newGame();
     }
 
@@ -25,10 +25,10 @@ public class GameController {
         grid.newGame();
         bombs.newGame();
         players.resetPlayers();
-        
+
         gameOver = false;
     }
-    
+
     public void setFrame(MainFrame frame) {
         this.frame = frame;
     }

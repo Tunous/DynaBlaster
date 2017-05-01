@@ -6,7 +6,7 @@ public enum Direction {
     DOWN,
     LEFT,
     RIGHT;
-    
+
     public boolean isHorizontal() {
         return this == LEFT || this == RIGHT;
     }
