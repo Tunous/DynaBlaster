@@ -1,6 +1,10 @@
 package dynablaster;
 
+import java.util.concurrent.TimeUnit;
+
 public class Bomb {
+
+    private static final long TIME_TO_EXPLOSION = TimeUnit.SECONDS.toMillis(2);
 
     /**
      * The player which placed this bomb.
@@ -15,7 +19,7 @@ public class Bomb {
     /**
      * The time when this bomb has been placed.
      */
-    public final long placementTime;
+    private final long when;
 
     /**
      * The horizontal coordinate of the bomb position. (In tiles)
@@ -37,7 +41,8 @@ public class Bomb {
         this.x = x;
         this.y = y;
         this.range = range;
-        placementTime = System.currentTimeMillis();
+
+        when = System.currentTimeMillis();
     }
 
     /**
@@ -47,7 +52,7 @@ public class Bomb {
      * {@code false}.
      */
     public boolean shouldExplode() {
-        return System.currentTimeMillis() - placementTime >= 2000;
+        return System.currentTimeMillis() - when >= TIME_TO_EXPLOSION;
     }
 
     /**

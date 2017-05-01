@@ -10,18 +10,22 @@ public class Explosion {
 
     public final int x;
     public final int y;
-    public final long placementTime;
-
-    public Explosion(int x, int y, long placementTime) {
-        this.y = y;
-        this.x = x;
-        this.placementTime = placementTime;
-    }
+    public final long when;
 
     public int rangeUp = 0;
     public int rangeDown = 0;
     public int rangeLeft = 0;
     public int rangeRight = 0;
+
+    public Explosion(int x, int y, long placementTime) {
+        this.y = y;
+        this.x = x;
+        this.when = placementTime;
+    }
+    
+    public boolean hasTimedOut() {
+        return System.currentTimeMillis() - when >= DURATION;
+    }
     
     public boolean isInRange(int x, int y) {
         if (this.x != x && this.y != y) {
@@ -107,7 +111,7 @@ public class Explosion {
             }
         }
         
-        long life = (System.currentTimeMillis() - placementTime);
+        long life = (System.currentTimeMillis() - when);
         int frame = (int) ((life * 4) / DURATION);
         offset += frame;
         
