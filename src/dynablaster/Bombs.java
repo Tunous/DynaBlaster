@@ -6,19 +6,23 @@ import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Bombs {
 
     private final ArrayList<Bomb> bombs = new ArrayList<>();
+    private final ArrayList<Explosion> explosions = new ArrayList<>();
 
     private final Image bombImage;
     private final GameController controller;
+    private final Image explosionImage;
 
     public Bombs(GameController controller) {
         this.controller = controller;
 
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         bombImage = toolkit.getImage("bomb.png");
+        explosionImage = toolkit.getImage("explosion.png");
     }
 
     public void newGame() {
@@ -46,6 +50,14 @@ public class Bombs {
                 explodeBomb(bomb);
             }
         }
+        long now = System.currentTimeMillis();
+
+        List<Explosion> explosionsClone = (List<Explosion>) explosions.clone();
+        for (Explosion explosion : explosionsClone) {
+            if (now - explosion.placementTime >= 500) {
+                explosions.remove(explosion);
+            }
+        }
     }
 
     private void explodeBomb(Bomb bomb) {
@@ -53,29 +65,40 @@ public class Bombs {
             return;
         }
 
+        long time = System.currentTimeMillis();
+        final Explosion explosion = new Explosion(bomb.x, bomb.y, time);
+
+        explosions.add(explosion);
         bomb.exploded();
         bombs.remove(bomb);
 
-        for (int i = 0; i <= bomb.range; i++) {
+        if (destroyAt(bomb, bomb.x, bomb.y)) {
+            return;
+        }
+
+        for (int i = 1; i <= bomb.range; i++) {
             if (destroyAt(bomb, bomb.x, bomb.y - i)) {
                 break;
             }
+            explosion.rangeUp += 1;
         }
-        for (int i = 0; i <= bomb.range; i++) {
+        for (int i = 1; i <= bomb.range; i++) {
             if (destroyAt(bomb, bomb.x, bomb.y + i)) {
                 break;
             }
+            explosion.rangeDown += 1;
         }
-        for (int i = 0; i <= bomb.range; i++) {
+        for (int i = 1; i <= bomb.range; i++) {
             if (destroyAt(bomb, bomb.x - i, bomb.y)) {
                 break;
             }
-
+            explosion.rangeLeft += 1;
         }
-        for (int i = 0; i <= bomb.range; i++) {
+        for (int i = 1; i <= bomb.range; i++) {
             if (destroyAt(bomb, bomb.x + i, bomb.y)) {
                 break;
             }
+            explosion.rangeRight += 1;
         }
     }
 
@@ -110,6 +133,10 @@ public class Bombs {
                     width,
                     height,
                     observer);
+        }
+
+        for (Explosion explosion : explosions) {
+            explosion.draw(g, observer, explosionImage);
         }
     }
 
