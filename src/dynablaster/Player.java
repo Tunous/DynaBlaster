@@ -1,5 +1,9 @@
 package dynablaster;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.ImageObserver;
+
 public class Player {
 
     private int x;
@@ -27,14 +31,6 @@ public class Player {
         return (y + Grid.TILE_SIZE / 2) / Grid.TILE_SIZE + 1;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
     public void setMovementDirection(Direction dir) {
         movementDirection = dir;
     }
@@ -42,7 +38,7 @@ public class Player {
     public void increaseSpeed() {
         speed += Grid.SCALE;
     }
-    
+
     public void increaseRange() {
         bombRange += 1;
     }
@@ -71,6 +67,22 @@ public class Player {
 
     public boolean isDead() {
         return dead;
+    }
+
+    public void draw(Graphics2D g, ImageObserver observer, Image image) {
+        if (isDead()) {
+            return;
+        }
+
+        final int width = image.getWidth(observer) * Grid.SCALE;
+        final int height = image.getHeight(observer) * Grid.SCALE;
+
+        g.drawImage(image,
+                x + 13 * Grid.SCALE,
+                y + 9 * Grid.SCALE,
+                width,
+                height,
+                observer);
     }
 
     public void update(Grid grid) {

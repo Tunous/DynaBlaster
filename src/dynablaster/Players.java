@@ -6,86 +6,69 @@ import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
+import java.util.HashMap;
 
 public class Players extends KeyAdapter {
 
-    private final Image[] playerImages;
-    private final Player[] players;
-    private final int[] latestKeyPresses;
-    
+    private final HashMap<PlayerColor, Integer> latestKeyPresses = new HashMap<>();
+    private final HashMap<PlayerColor, Image> playerImages = new HashMap<>();
+    private final HashMap<PlayerColor, Player> players = new HashMap<>();
+
     private final GameController controller;
 
     public Players(GameController controller) {
         this.controller = controller;
-        
-        players = new Player[2];
-        players[0] = new Player(PlayerColor.WHITE, 0, 0);
-        players[1] = new Player(PlayerColor.GREEN, 10, 10);
 
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        playerImages = new Image[players.length];
-        for (int i = 0; i < playerImages.length; i++) {
-            playerImages[i] = toolkit.getImage(players[i].color.fileName);
+        for (PlayerColor color : PlayerColor.values()) {
+            Image image = toolkit.getImage(color.fileName);
+            playerImages.put(color, image);
         }
-        
-        latestKeyPresses = new int[players.length];
+
+        resetPlayers();
     }
-    
-    public void newGame() {
-        players[0] = new Player(PlayerColor.WHITE, 0, 0);
-        players[1] = new Player(PlayerColor.GREEN, 10, 10);
+
+    public final void resetPlayers() {
+        players.clear();
+        players.put(PlayerColor.WHITE, new Player(PlayerColor.WHITE, 0, 0));
+        players.put(PlayerColor.GREEN, new Player(PlayerColor.GREEN, 10, 10));
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
-                getPlayer(PlayerColor.WHITE).setMovementDirection(Direction.UP);
-                latestKeyPresses[0] = e.getKeyCode();
+                setMovementDirection(PlayerColor.WHITE, Direction.UP, e.getKeyCode());
                 break;
             case KeyEvent.VK_DOWN:
-                getPlayer(PlayerColor.WHITE).setMovementDirection(Direction.DOWN);
-                latestKeyPresses[0] = e.getKeyCode();
+                setMovementDirection(PlayerColor.WHITE, Direction.DOWN, e.getKeyCode());
                 break;
             case KeyEvent.VK_LEFT:
-                getPlayer(PlayerColor.WHITE).setMovementDirection(Direction.LEFT);
-                latestKeyPresses[0] = e.getKeyCode();
+                setMovementDirection(PlayerColor.WHITE, Direction.LEFT, e.getKeyCode());
                 break;
             case KeyEvent.VK_RIGHT:
-                getPlayer(PlayerColor.WHITE).setMovementDirection(Direction.RIGHT);
-                latestKeyPresses[0] = e.getKeyCode();
+                setMovementDirection(PlayerColor.WHITE, Direction.RIGHT, e.getKeyCode());
                 break;
             case KeyEvent.VK_SPACE:
-                Player player = getPlayer(PlayerColor.WHITE);
-                int x = player.getTileX();
-                int y = player.getTileY();
-
-                controller.bombs.placeBomb(player, x, y);
+                placeBomb(PlayerColor.WHITE);
                 break;
-                
+
             case KeyEvent.VK_W:
-                getPlayer(PlayerColor.GREEN).setMovementDirection(Direction.UP);
-                latestKeyPresses[1] = e.getKeyCode();
+                setMovementDirection(PlayerColor.GREEN, Direction.UP, e.getKeyCode());
                 break;
             case KeyEvent.VK_S:
-                getPlayer(PlayerColor.GREEN).setMovementDirection(Direction.DOWN);
-                latestKeyPresses[1] = e.getKeyCode();
+                setMovementDirection(PlayerColor.GREEN, Direction.DOWN, e.getKeyCode());
                 break;
             case KeyEvent.VK_A:
-                getPlayer(PlayerColor.GREEN).setMovementDirection(Direction.LEFT);
-                latestKeyPresses[1] = e.getKeyCode();
+                setMovementDirection(PlayerColor.GREEN, Direction.LEFT, e.getKeyCode());
                 break;
             case KeyEvent.VK_D:
-                getPlayer(PlayerColor.GREEN).setMovementDirection(Direction.RIGHT);
-                latestKeyPresses[1] = e.getKeyCode();
+                setMovementDirection(PlayerColor.GREEN, Direction.RIGHT, e.getKeyCode());
                 break;
             case KeyEvent.VK_Q:
-                Player greenPlayer = getPlayer(PlayerColor.GREEN);
-                int gX = greenPlayer.getTileX();
-                int gY = greenPlayer.getTileY();
-
-                controller.bombs.placeBomb(greenPlayer, gX, gY);
+                placeBomb(PlayerColor.GREEN);
                 break;
+
             default:
                 break;
         }
@@ -98,89 +81,96 @@ public class Players extends KeyAdapter {
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_RIGHT:
-                if (latestKeyPresses[0] == e.getKeyCode()) {
-                    getPlayer(PlayerColor.WHITE).setMovementDirection(Direction.NONE);
-                }
+                setMovementDirection(PlayerColor.WHITE, Direction.NONE, e.getKeyCode());
                 break;
+
             case KeyEvent.VK_W:
             case KeyEvent.VK_S:
             case KeyEvent.VK_A:
             case KeyEvent.VK_D:
-                if (latestKeyPresses[1] == e.getKeyCode()) {
-                    getPlayer(PlayerColor.GREEN).setMovementDirection(Direction.NONE);
-                }
+                setMovementDirection(PlayerColor.GREEN, Direction.NONE, e.getKeyCode());
                 break;
+
             default:
                 break;
         }
     }
 
-    public void update() {
-        for (Player player : players) {
-            player.update(controller.grid);
-            controller.grid.collectPowerup(player);
-        }
-        
-        checkWinner();
-    }
+    private void setMovementDirection(PlayerColor color, Direction direction,
+            int keyCode) {
+        Player player = players.get(color);
 
-    private void checkWinner() {
-        Player lastAlivePlayer = null;
-        int alivePlayersCount = 0;
-        
-        for (Player player : players) {
-            if (!player.isDead()) {
-                alivePlayersCount += 1;
-                if (alivePlayersCount > 1) {
-                    return;
-                }
-                lastAlivePlayer = player;
+        if (direction == Direction.NONE) {
+            if (latestKeyPresses.getOrDefault(color, 0) == keyCode) {
+                player.setMovementDirection(direction);
             }
-        }
-        
-        if (alivePlayersCount == 1) {
-            controller.announceWinner(lastAlivePlayer);
         } else {
-            controller.announceDraw();
+            player.setMovementDirection(direction);
+            latestKeyPresses.put(color, keyCode);
         }
     }
 
-    public void draw(Graphics2D g, ImageObserver observer) {
-        for (int i = 0; i < players.length; i++) {
-            Player player = players[i];
-            if (player.isDead()) {
-                continue;
-            }
-            
-            final Image image = playerImages[i];
-            final int width = image.getWidth(observer) * Grid.SCALE;
-            final int height = image.getHeight(observer) * Grid.SCALE;
+    private void placeBomb(PlayerColor color) {
+        Player player = players.get(color);
+        int x = player.getTileX();
+        int y = player.getTileY();
 
-            g.drawImage(image,
-                    player.getX() + 13 * Grid.SCALE,
-                    player.getY() + 9 * Grid.SCALE,
-                    width,
-                    height,
-                    observer);
-        }
+        controller.bombs.placeBomb(player, x, y);
     }
 
+    /**
+     * Kill all players that are located at the tile with specified coordinates.
+     *
+     * @param x The horizontal position, in tiles.
+     * @param y The vertical position, in tiles.
+     */
     public void killAt(int x, int y) {
-        for (Player player : players) {
+        for (Player player : players.values()) {
             if (player.getTileX() == x && player.getTileY() == y) {
                 player.kill();
             }
         }
     }
 
-    public Player getPlayer(PlayerColor color) {
-        switch (color) {
-            case WHITE:
-                return players[0];
-            case GREEN:
-                return players[1];
-            default:
-                return null;
+    public void draw(Graphics2D g, ImageObserver observer) {
+        for (Player player : players.values()) {
+            final Image image = playerImages.get(player.color);
+            player.draw(g, observer, image);
+        }
+    }
+
+    public void update() {
+        for (Player player : players.values()) {
+            player.update(controller.grid);
+            controller.grid.collectPowerup(player);
+        }
+
+        checkWinner();
+    }
+
+    /**
+     * Check if someone has won this round.
+     */
+    private void checkWinner() {
+        Player lastAlivePlayer = null;
+        int alivePlayersCount = 0;
+
+        for (Player player : players.values()) {
+            if (!player.isDead()) {
+                alivePlayersCount += 1;
+                if (alivePlayersCount > 1) {
+                    // More than 1 alive player means that the game is still
+                    // running. Do not do anything.
+                    return;
+                }
+                lastAlivePlayer = player;
+            }
+        }
+
+        if (alivePlayersCount == 1) {
+            controller.announceWinner(lastAlivePlayer);
+        } else {
+            controller.announceDraw();
         }
     }
 }

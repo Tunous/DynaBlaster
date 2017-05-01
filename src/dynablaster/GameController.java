@@ -24,7 +24,7 @@ public class GameController {
     public final void newGame() {
         grid.newGame();
         bombs.newGame();
-        players.newGame();
+        players.resetPlayers();
         
         gameOver = false;
     }
