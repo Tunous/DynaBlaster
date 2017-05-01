@@ -20,6 +20,41 @@ public class Explosion {
     public int rangeDown = 0;
     public int rangeLeft = 0;
     public int rangeRight = 0;
+    
+    public boolean isInRange(int x, int y) {
+        if (this.x != x && this.y != y) {
+            // If both x and y axis are different then there is no chance that
+            // this tile is in range of the bomb.
+            return false;
+        }
+        
+        if (this.x == x && this.y == y) {
+            return true;
+        }
+        
+        for (int i = 1; i <= rangeUp; i++) {
+            if (this.x == x && this.y - i == y) {
+                return true;
+            }
+        }
+        for (int i = 1; i <= rangeDown; i++) {
+            if (this.x == x && this.y + i == y) {
+                return true;
+            }
+        }
+        for (int i = 1; i <= rangeLeft; i++) {
+            if (this.x - i == x && this.y == y) {
+                return true;
+            }
+        }
+        for (int i = 1; i <= rangeRight; i++) {
+            if (this.x + i == x && this.y == y) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
     public void draw(Graphics2D g, ImageObserver observer, Image image) {
         drawPart(g, observer, image, Direction.NONE, false, 0, 0);

@@ -203,6 +203,9 @@ public class Players extends KeyAdapter {
 
     public void update() {
         for (Player player : players.values()) {
+            if (controller.bombs.enteredExplosion(player)) {
+                player.kill();
+            }
             player.update(controller.grid);
             controller.grid.collectPowerup(player);
         }

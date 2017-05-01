@@ -149,4 +149,13 @@ public class Bombs {
 
         return false;
     }
+
+    public boolean enteredExplosion(Player player) {
+        for (Explosion explosion : explosions) {
+            if (explosion.isInRange(player.getTileX(), player.getTileY())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

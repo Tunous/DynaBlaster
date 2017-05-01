@@ -187,6 +187,10 @@ public class Grid {
     }
 
     public void collectPowerup(Player player) {
+        if (player.isDead()) {
+            return;
+        }
+        
         int x = player.getTileX();
         int y = player.getTileY();
 
