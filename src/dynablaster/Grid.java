@@ -12,11 +12,12 @@ public class Grid {
     private static final int WIDTH = 13;
     private static final int HEIGHT = 13;
     private static final int TILES = WIDTH * HEIGHT;
-    
+    private static final Random RANDOM = new Random();
+
     public static final int SCALE = 2;
     public static final int TILE_SIZE = 16 * SCALE;
-    public static final Dimension SIZE =
-            new Dimension(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE);
+    public static final Dimension SIZE
+            = new Dimension(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE);
 
     private final Tile tiles[] = new Tile[TILES];
 
@@ -24,19 +25,23 @@ public class Grid {
     private final Image grass;
     private final Image grassShadow;
     private final Image destructible;
-    
+    private final Image powerupBombImage;
+    private final Image powerupRangeImage;
+
     private final GameController controller;
 
     public Grid(GameController controller) {
         this.controller = controller;
-        
+
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         indestructible = toolkit.getImage("indestructible.png");
         grass = toolkit.getImage("grass.png");
         grassShadow = toolkit.getImage("grass-shadow.png");
         destructible = toolkit.getImage("destructible.png");
+        powerupBombImage = toolkit.getImage("powerup-bomb.png");
+        powerupRangeImage = toolkit.getImage("powerup-range.png");
     }
-    
+
     public void newGame() {
         generateGrid();
     }
@@ -93,14 +98,14 @@ public class Grid {
         if (!isValidPosition(x, y)) {
             return false;
         }
-        
+
         if (isSolidBlockAt(x, y)) {
             return false;
         }
-        
+
         return !controller.bombs.isBombAt(x, y);
     }
-    
+
     private boolean isSolidBlockAt(int x, int y) {
         final Tile tile = getTile(x, y);
         return tile == Tile.INDESTRUCTIBLE || tile == Tile.DESTRUCTIBLE;
@@ -113,17 +118,36 @@ public class Grid {
     public void draw(Graphics2D g, ImageObserver observer) {
         for (int x = 0; x < 13; x++) {
             for (int y = 0; y < 13; y++) {
+                Tile tile = getTile(x, y);
                 Image tileImage;
-                if (getTile(x, y) == Tile.INDESTRUCTIBLE) {
-                    tileImage = indestructible;
-                } else if (getTile(x, y) == Tile.DESTRUCTIBLE) {
-                    tileImage = destructible;
-                } else if (y > 0 && isSolidBlockAt(x, y - 1)) {
-                    tileImage = grassShadow;
-                } else {
-                    tileImage = grass;
+
+                switch (tile) {
+                    case INDESTRUCTIBLE:
+                        tileImage = indestructible;
+                        break;
+                    case DESTRUCTIBLE:
+                        tileImage = destructible;
+                        break;
+                    case POWERUP_BOMB:
+                        tileImage = powerupBombImage;
+                        break;
+                    case POWERUP_RANGE:
+                        tileImage = powerupRangeImage;
+                        break;
+
+                    default:
+                        final boolean isUnderSolidBlock
+                                = y > 0 && isSolidBlockAt(x, y - 1);
+                        tileImage = isUnderSolidBlock ? grassShadow : grass;
+                        break;
                 }
-                g.drawImage(tileImage, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE,observer);
+
+                g.drawImage(tileImage,
+                        x * TILE_SIZE,
+                        y * TILE_SIZE,
+                        TILE_SIZE,
+                        TILE_SIZE,
+                        observer);
             }
         }
     }
@@ -134,10 +158,36 @@ public class Grid {
         }
 
         if (getTile(x, y) == Tile.DESTRUCTIBLE) {
-            setTile(x, y, Tile.GRASS);
+            Tile tile = Tile.GRASS;
+            if (RANDOM.nextInt(5) == 0) {
+                tile = RANDOM.nextInt(2) == 0
+                        ? Tile.POWERUP_BOMB : Tile.POWERUP_RANGE;
+            }
+
+            setTile(x, y, tile);
             return true;
         }
-        
+
         return getTile(x, y) == Tile.INDESTRUCTIBLE;
+    }
+
+    public void collectPowerup(Player player) {
+        int x = player.getTileX();
+        int y = player.getTileY();
+
+        Tile tile = getTile(x, y);
+
+        switch (tile) {
+            case POWERUP_BOMB:
+                player.addBomb();
+                setTile(x, y, Tile.GRASS);
+                break;
+            case POWERUP_RANGE:
+                player.increaseRange();
+                setTile(x, y, Tile.GRASS);
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -5,8 +5,8 @@ public class Player {
     private int x;
     private int y;
     private int speed = Grid.SCALE;
-    private int bombs = 5;
-    private int bombRange = 5;
+    private int bombs = 1;
+    private int bombRange = 1;
     private boolean dead = false;
     private Direction movementDirection = Direction.NONE;
 
@@ -42,6 +42,10 @@ public class Player {
     public void increaseSpeed() {
         speed += Grid.SCALE;
     }
+    
+    public void increaseRange() {
+        bombRange += 1;
+    }
 
     public Bomb placeBomb(int bombX, int bombY) {
         if (!canPlaceBombs()) {
@@ -53,7 +57,7 @@ public class Player {
         return bomb;
     }
 
-    public void restoredBomb() {
+    public void addBomb() {
         bombs += 1;
     }
 

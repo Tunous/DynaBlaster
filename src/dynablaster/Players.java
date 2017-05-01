@@ -118,6 +118,7 @@ public class Players extends KeyAdapter {
     public void update() {
         for (Player player : players) {
             player.update(controller.grid);
+            controller.grid.collectPowerup(player);
         }
         
         checkWinner();

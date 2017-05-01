@@ -25,7 +25,7 @@ public class Bomb {
 
     public void exploded() {
         hasExploded = true;
-        owner.restoredBomb();
+        owner.addBomb();
     }
 
     public boolean hasExploded() {

@@ -60,23 +60,23 @@ public class Bombs {
         bomb.exploded();
         bombs.remove(bomb);
 
-        for (int i = 0; i < bomb.range; i++) {
+        for (int i = 0; i <= bomb.range; i++) {
             if (destroyAt(bomb, bomb.x, bomb.y - i)) {
                 break;
             }
         }
-        for (int i = 0; i < bomb.range; i++) {
+        for (int i = 0; i <= bomb.range; i++) {
             if (destroyAt(bomb, bomb.x, bomb.y + i)) {
                 break;
             }
         }
-        for (int i = 0; i < bomb.range; i++) {
+        for (int i = 0; i <= bomb.range; i++) {
             if (destroyAt(bomb, bomb.x - i, bomb.y)) {
                 break;
             }
 
         }
-        for (int i = 0; i < bomb.range; i++) {
+        for (int i = 0; i <= bomb.range; i++) {
             if (destroyAt(bomb, bomb.x + i, bomb.y)) {
                 break;
             }
