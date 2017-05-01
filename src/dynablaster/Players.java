@@ -2,6 +2,7 @@ package dynablaster;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -9,9 +10,10 @@ import java.awt.image.ImageObserver;
 import java.util.HashMap;
 
 public class Players extends KeyAdapter {
+    
+    public static Image IMAGE;
 
     private final HashMap<PlayerColor, Integer> latestKeyPresses = new HashMap<>();
-    private final HashMap<PlayerColor, Image> playerImages = new HashMap<>();
     private final HashMap<PlayerColor, Player> players = new HashMap<>();
 
     private final GameController controller;
@@ -20,10 +22,7 @@ public class Players extends KeyAdapter {
         this.controller = controller;
 
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        for (PlayerColor color : PlayerColor.values()) {
-            Image image = toolkit.getImage(color.fileName);
-            playerImages.put(color, image);
-        }
+        IMAGE = toolkit.getImage("players.png");
 
         resetPlayers();
     }
@@ -198,8 +197,7 @@ public class Players extends KeyAdapter {
 
     public void draw(Graphics2D g, ImageObserver observer) {
         for (Player player : players.values()) {
-            final Image image = playerImages.get(player.color);
-            player.draw(g, observer, image);
+            player.draw(g, observer);
         }
     }
 

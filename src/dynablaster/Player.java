@@ -2,9 +2,14 @@ package dynablaster;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.ImageObserver;
 
 public class Player {
+
+    private static final int PLAYER_SIZE = 23;
+    private static final int PLAYER_X_OFFSET = 13;
+    private static final int PLAYER_Y_OFFSET = 9;
 
     private int x;
     private int y;
@@ -13,6 +18,7 @@ public class Player {
     private int bombRange = 1;
     private boolean dead = false;
     private Direction movementDirection = Direction.NONE;
+    private Direction latestDir = Direction.DOWN;
 
     public final PlayerColor color;
 
@@ -33,6 +39,9 @@ public class Player {
 
     public void setMovementDirection(Direction dir) {
         movementDirection = dir;
+        if (dir != Direction.NONE) {
+            latestDir = dir;
+        }
     }
 
     public void increaseSpeed() {
@@ -69,24 +78,66 @@ public class Player {
         return dead;
     }
 
-    public void draw(Graphics2D g, ImageObserver observer, Image image) {
-        if (isDead()) {
-            return;
+    public void draw(Graphics2D g, ImageObserver observer) {
+        int offset;
+        switch (color) {
+            case GREEN:
+                offset = 20;
+                break;
+            case RED:
+                offset = 40;
+                break;
+            case BLUE:
+                offset = 60;
+                break;
+            default:
+                offset = 0;
+                break;
         }
 
-        final int width = image.getWidth(observer) * Grid.SCALE;
-        final int height = image.getHeight(observer) * Grid.SCALE;
+        if (isDead()) {
+            offset += 12;
+        } else {
+            switch (latestDir) {
+                case RIGHT:
+                    offset += 3;
+                    break;
+                case LEFT:
+                    offset += 6;
+                    break;
+                case UP:
+                    offset += 9;
+                    break;
+            }
+        }
 
-        g.drawImage(image,
-                x + 13 * Grid.SCALE,
-                y + 9 * Grid.SCALE,
-                width,
-                height,
+        int offsetX = offset % 13;
+        int offsetY = offset / 13;
+
+        final int sourceX = offsetX * PLAYER_SIZE + offsetX;
+        final int sourceY = offsetY * PLAYER_SIZE + offsetY;
+        final int width = PLAYER_SIZE;
+        final int height = PLAYER_SIZE;
+
+        final int targetX = x + PLAYER_X_OFFSET * Grid.SCALE;
+        final int targetY = y + PLAYER_Y_OFFSET * Grid.SCALE;
+        final int targetWidth = width * Grid.SCALE;
+        final int targetHeight = height * Grid.SCALE;
+
+        g.drawImage(Players.IMAGE,
+                targetX,
+                targetY,
+                targetX + targetWidth,
+                targetY + targetHeight,
+                sourceX,
+                sourceY,
+                sourceX + width,
+                sourceY + height,
                 observer);
     }
 
     public void update(Grid grid) {
-        if (movementDirection == Direction.NONE) {
+        if (movementDirection == Direction.NONE || isDead()) {
             return;
         }
 
