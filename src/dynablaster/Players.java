@@ -172,6 +172,10 @@ public class Players extends KeyAdapter {
 
     private void placeBomb(PlayerColor color) {
         Player player = players.get(color);
+        if (player.isDead()) {
+            return;
+        }
+
         int x = player.getTileX();
         int y = player.getTileY();
 
