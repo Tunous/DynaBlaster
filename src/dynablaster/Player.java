@@ -1,8 +1,6 @@
 package dynablaster;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
 import java.awt.image.ImageObserver;
 
 public class Player {
@@ -11,32 +9,87 @@ public class Player {
     private static final int PLAYER_X_OFFSET = 13;
     private static final int PLAYER_Y_OFFSET = 9;
 
-    private int x;
-    private int y;
+    /**
+     * The x coordinate specifying where the player should be drawn on the
+     * board. (In pixels)
+     */
+    private int drawX;
+
+    /**
+     * The y coordinate specifying where the player should be drawn on the
+     * board. (In pixels)
+     */
+    private int drawY;
+
+    /**
+     * The amount of pixels the player should be moved on each movement action.
+     */
     private int speed = Grid.SCALE;
+
+    /**
+     * The amount of bomb the player is currently able to place.
+     */
     private int bombs = 1;
+
+    /**
+     * The maximum explosion range of the bombs placed by the player.
+     */
     private int bombRange = 1;
+
+    /**
+     * Whether the player is currently dead.
+     */
     private boolean dead = false;
+
+    /**
+     * The current movement direction of the player. Used to move him around the
+     * board every frame.
+     */
     private Direction movementDirection = Direction.NONE;
+
+    /**
+     * The latest movement direction other than {@code Direction.NONE}. Used to
+     * render the player facing correct direction.
+     */
     private Direction latestDir = Direction.DOWN;
 
+    /**
+     * The color of this player.
+     */
     public final PlayerColor color;
 
     public Player(PlayerColor color, int spawnX, int spawnY) {
         this.color = color;
 
-        x = spawnX * Grid.TILE_SIZE;
-        y = spawnY * Grid.TILE_SIZE;
+        drawX = spawnX * Grid.TILE_SIZE;
+        drawY = spawnY * Grid.TILE_SIZE;
     }
 
-    public int getTileX() {
-        return (x + Grid.TILE_SIZE / 2) / Grid.TILE_SIZE + 1;
+    /**
+     * Get the horizontal position of the player, in tiles.
+     *
+     * @return The horizontal position of the player, in tiles.
+     */
+    public int getX() {
+        return (drawX + Grid.TILE_SIZE / 2) / Grid.TILE_SIZE + 1;
     }
 
-    public int getTileY() {
-        return (y + Grid.TILE_SIZE / 2) / Grid.TILE_SIZE + 1;
+    /**
+     * Get the vertical position of the player, in tiles.
+     *
+     * @return The vertical position of the player, in tiles.
+     */
+    public int getY() {
+        return (drawY + Grid.TILE_SIZE / 2) / Grid.TILE_SIZE + 1;
     }
 
+    /**
+     * Set the current movement direction of the player. If the specified
+     * direction is different than {@code Direction.NONE} then the player will
+     * move in that direction on every call to the {@code update()} method.
+     *
+     * @param dir The direction in which the player should move.
+     */
     public void setMovementDirection(Direction dir) {
         movementDirection = dir;
         if (dir != Direction.NONE) {
@@ -44,14 +97,27 @@ public class Player {
         }
     }
 
+    /**
+     * Increase the movement speed of the player.
+     */
     public void increaseSpeed() {
         speed += Grid.SCALE;
     }
 
+    /**
+     * Increase the range of the bombs placed by the player by one.
+     */
     public void increaseRange() {
         bombRange += 1;
     }
 
+    /**
+     * Try to place a bomb at the tile with the specified coordinates.
+     *
+     * @param bombX The horizontal coordinate of the tile.
+     * @param bombY The vertical coordinate of the tile.
+     * @return The placed bomb or {@code null} if no bomb was placed.
+     */
     public Bomb placeBomb(int bombX, int bombY) {
         if (!canPlaceBombs()) {
             return null;
@@ -62,18 +128,37 @@ public class Player {
         return bomb;
     }
 
+    /**
+     * Increase the amount of bombs that the player can place at the same time
+     * by one.
+     */
     public void addBomb() {
         bombs += 1;
     }
 
+    /**
+     * Tells whether the player is able to place bombs.
+     *
+     * @return {@code true} if the player can place bombs; otherwise,
+     * {@code false}.
+     */
     public boolean canPlaceBombs() {
         return bombs > 0;
     }
 
+    /**
+     * Kill the player making him stop responding to user input.
+     */
     public void kill() {
         dead = true;
     }
 
+    /**
+     * Tells whether the player has been killed.
+     *
+     * @return {@code true} if the player has been killed; otherwise,
+     * {@code false}.
+     */
     public boolean isDead() {
         return dead;
     }
@@ -119,8 +204,8 @@ public class Player {
         final int width = PLAYER_SIZE;
         final int height = PLAYER_SIZE;
 
-        final int targetX = x + PLAYER_X_OFFSET * Grid.SCALE;
-        final int targetY = y + PLAYER_Y_OFFSET * Grid.SCALE;
+        final int targetX = drawX + PLAYER_X_OFFSET * Grid.SCALE;
+        final int targetY = drawY + PLAYER_Y_OFFSET * Grid.SCALE;
         final int targetWidth = width * Grid.SCALE;
         final int targetHeight = height * Grid.SCALE;
 
@@ -141,10 +226,10 @@ public class Player {
             return;
         }
 
-        int modX = x % Grid.TILE_SIZE;
-        int modY = y % Grid.TILE_SIZE;
+        int modX = drawX % Grid.TILE_SIZE;
+        int modY = drawY % Grid.TILE_SIZE;
 
-        alignAndMove(grid, getTileX(), getTileY(), modX, modY);
+        alignAndMove(grid, getX(), getY(), modX, modY);
     }
 
     /**
@@ -269,7 +354,7 @@ public class Player {
      */
     private void align(boolean horizontal, boolean reverse,
             boolean moveIfAligned) {
-        int pos = horizontal ? x : y;
+        int pos = horizontal ? drawX : drawY;
         int mod = pos % Grid.TILE_SIZE;
 
         if (mod == 0) {
@@ -284,15 +369,15 @@ public class Player {
         if (!reverse && mod < Grid.TILE_SIZE / 2
                 || reverse && mod >= Grid.TILE_SIZE / 2) {
             if (horizontal) {
-                x -= alignSpeed;
+                drawX -= alignSpeed;
             } else {
-                y -= alignSpeed;
+                drawY -= alignSpeed;
             }
         } else {
             if (horizontal) {
-                x += alignSpeed;
+                drawX += alignSpeed;
             } else {
-                y += alignSpeed;
+                drawY += alignSpeed;
             }
         }
     }
@@ -303,16 +388,16 @@ public class Player {
     private void moveInternal() {
         switch (movementDirection) {
             case UP:
-                y -= speed;
+                drawY -= speed;
                 break;
             case DOWN:
-                y += speed;
+                drawY += speed;
                 break;
             case LEFT:
-                x -= speed;
+                drawX -= speed;
                 break;
             case RIGHT:
-                x += speed;
+                drawX += speed;
                 break;
             default:
                 break;

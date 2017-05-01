@@ -2,13 +2,34 @@ package dynablaster;
 
 public class Bomb {
 
+    /**
+     * The player which placed this bomb.
+     */
     private final Player owner;
 
+    /**
+     * Tells whether the bomb has already exploded.
+     */
     private boolean hasExploded = false;
 
+    /**
+     * The time when this bomb has been placed.
+     */
     public final long placementTime;
+
+    /**
+     * The horizontal coordinate of the bomb position. (In tiles)
+     */
     public final int x;
+
+    /**
+     * The vertical coordinate of the bomb position. (In tiles)
+     */
     public final int y;
+
+    /**
+     * The distance (in tiles) which the bomb can reach with its explosion.
+     */
     public final int range;
 
     public Bomb(Player owner, int x, int y, int range) {
@@ -19,15 +40,29 @@ public class Bomb {
         placementTime = System.currentTimeMillis();
     }
 
+    /**
+     * Tells whether the bomb should explode.
+     *
+     * @return {@code true} if the bomb should explode; otherwise,
+     * {@code false}.
+     */
     public boolean shouldExplode() {
         return System.currentTimeMillis() - placementTime >= 2000;
     }
 
-    public void exploded() {
+    /**
+     * Marks this bomb as exploded.
+     */
+    public void setAsExploded() {
         hasExploded = true;
         owner.addBomb();
     }
 
+    /**
+     * Tells whether the bomb has already exploded.
+     *
+     * @return {@code true} if the bomb has exploded; otherwise {@code false}.
+     */
     public boolean hasExploded() {
         return hasExploded;
     }

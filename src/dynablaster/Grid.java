@@ -191,8 +191,8 @@ public class Grid {
             return;
         }
         
-        int x = player.getTileX();
-        int y = player.getTileY();
+        int x = player.getX();
+        int y = player.getY();
 
         Tile tile = getTile(x, y);
 

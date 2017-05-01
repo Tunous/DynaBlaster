@@ -2,7 +2,6 @@ package dynablaster;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -175,8 +174,8 @@ public class Players extends KeyAdapter {
             return;
         }
 
-        int x = player.getTileX();
-        int y = player.getTileY();
+        int x = player.getX();
+        int y = player.getY();
 
         controller.bombs.placeBomb(player, x, y);
     }
@@ -189,7 +188,7 @@ public class Players extends KeyAdapter {
      */
     public void killAt(int x, int y) {
         for (Player player : players.values()) {
-            if (player.getTileX() == x && player.getTileY() == y) {
+            if (player.getX() == x && player.getY() == y) {
                 player.kill();
             }
         }

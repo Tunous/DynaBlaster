@@ -6,7 +6,6 @@ import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Bombs {
 
@@ -70,7 +69,7 @@ public class Bombs {
         final Explosion explosion = new Explosion(bomb.x, bomb.y, time);
 
         explosions.add(explosion);
-        bomb.exploded();
+        bomb.setAsExploded();
         bombs.remove(bomb);
 
         if (destroyAt(bomb, bomb.x, bomb.y)) {
@@ -153,7 +152,7 @@ public class Bombs {
 
     public boolean enteredExplosion(Player player) {
         for (Explosion explosion : explosions) {
-            if (explosion.isInRange(player.getTileX(), player.getTileY())) {
+            if (explosion.isInRange(player.getX(), player.getY())) {
                 return true;
             }
         }
