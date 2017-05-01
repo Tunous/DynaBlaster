@@ -70,12 +70,20 @@ public class Grid {
     }
 
     private boolean isLockedPoint(int x, int y) {
-        return x == 1 && y == 1
+        final boolean whitePlayerSpawn = x == 1 && y == 1
                 || x == 2 && y == 1
-                || x == 1 && y == 2
-                || x == WIDTH - 2 && y == WIDTH - 2
-                || x == WIDTH - 3 && y == WIDTH - 2
-                || x == WIDTH - 2 && y == WIDTH - 3;
+                || x == 1 && y == 2;
+        final boolean greenPlayerSpawn = x == WIDTH - 2 && y == HEIGHT - 2
+                || x == WIDTH - 3 && y == HEIGHT - 2
+                || x == WIDTH - 2 && y == HEIGHT - 3;
+        final boolean redPlayerSpawn = x == WIDTH - 2 && y == 1
+                || x == WIDTH - 3 && y == 1
+                || x == WIDTH - 2 && y == 2;
+        final boolean bluePlayerSpawn = x == 1 && y == HEIGHT - 2
+                || x == 2 && y == HEIGHT - 2
+                || x == 1 && y == HEIGHT - 3;
+        return whitePlayerSpawn || greenPlayerSpawn || redPlayerSpawn
+                || bluePlayerSpawn;
     }
 
     public final void setTile(int x, int y, Tile tile) {

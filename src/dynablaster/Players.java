@@ -32,11 +32,14 @@ public class Players extends KeyAdapter {
         players.clear();
         players.put(PlayerColor.WHITE, new Player(PlayerColor.WHITE, 0, 0));
         players.put(PlayerColor.GREEN, new Player(PlayerColor.GREEN, 10, 10));
+        players.put(PlayerColor.RED, new Player(PlayerColor.RED, 10, 0));
+        players.put(PlayerColor.BLUE, new Player(PlayerColor.BLUE, 0, 10));
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
+            // WHITE player controls
             case KeyEvent.VK_UP:
                 setMovementDirection(PlayerColor.WHITE, Direction.UP, e.getKeyCode());
                 break;
@@ -50,9 +53,11 @@ public class Players extends KeyAdapter {
                 setMovementDirection(PlayerColor.WHITE, Direction.RIGHT, e.getKeyCode());
                 break;
             case KeyEvent.VK_SPACE:
+            case KeyEvent.VK_CONTROL:
                 placeBomb(PlayerColor.WHITE);
                 break;
 
+            // GREEN player controls
             case KeyEvent.VK_W:
                 setMovementDirection(PlayerColor.GREEN, Direction.UP, e.getKeyCode());
                 break;
@@ -66,7 +71,44 @@ public class Players extends KeyAdapter {
                 setMovementDirection(PlayerColor.GREEN, Direction.RIGHT, e.getKeyCode());
                 break;
             case KeyEvent.VK_Q:
+            case KeyEvent.VK_E:
                 placeBomb(PlayerColor.GREEN);
+                break;
+
+            // RED player controls
+            case KeyEvent.VK_I:
+                setMovementDirection(PlayerColor.RED, Direction.UP, e.getKeyCode());
+                break;
+            case KeyEvent.VK_K:
+                setMovementDirection(PlayerColor.RED, Direction.DOWN, e.getKeyCode());
+                break;
+            case KeyEvent.VK_J:
+                setMovementDirection(PlayerColor.RED, Direction.LEFT, e.getKeyCode());
+                break;
+            case KeyEvent.VK_L:
+                setMovementDirection(PlayerColor.RED, Direction.RIGHT, e.getKeyCode());
+                break;
+            case KeyEvent.VK_U:
+            case KeyEvent.VK_O:
+                placeBomb(PlayerColor.RED);
+                break;
+
+            // BLUE player controls
+            case KeyEvent.VK_NUMPAD8:
+                setMovementDirection(PlayerColor.BLUE, Direction.UP, e.getKeyCode());
+                break;
+            case KeyEvent.VK_NUMPAD2:
+                setMovementDirection(PlayerColor.BLUE, Direction.DOWN, e.getKeyCode());
+                break;
+            case KeyEvent.VK_NUMPAD4:
+                setMovementDirection(PlayerColor.BLUE, Direction.LEFT, e.getKeyCode());
+                break;
+            case KeyEvent.VK_NUMPAD6:
+                setMovementDirection(PlayerColor.BLUE, Direction.RIGHT, e.getKeyCode());
+                break;
+            case KeyEvent.VK_NUMPAD5:
+            case KeyEvent.VK_NUMPAD0:
+                placeBomb(PlayerColor.BLUE);
                 break;
 
             default:
@@ -77,6 +119,7 @@ public class Players extends KeyAdapter {
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
+            // WHITE player controls
             case KeyEvent.VK_UP:
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_LEFT:
@@ -84,11 +127,28 @@ public class Players extends KeyAdapter {
                 setMovementDirection(PlayerColor.WHITE, Direction.NONE, e.getKeyCode());
                 break;
 
+            // GREEN player controls
             case KeyEvent.VK_W:
             case KeyEvent.VK_S:
             case KeyEvent.VK_A:
             case KeyEvent.VK_D:
                 setMovementDirection(PlayerColor.GREEN, Direction.NONE, e.getKeyCode());
+                break;
+
+            // RED player controls
+            case KeyEvent.VK_I:
+            case KeyEvent.VK_K:
+            case KeyEvent.VK_J:
+            case KeyEvent.VK_L:
+                setMovementDirection(PlayerColor.RED, Direction.NONE, e.getKeyCode());
+                break;
+
+            // BLUE player controls
+            case KeyEvent.VK_NUMPAD8:
+            case KeyEvent.VK_NUMPAD2:
+            case KeyEvent.VK_NUMPAD4:
+            case KeyEvent.VK_NUMPAD6:
+                setMovementDirection(PlayerColor.BLUE, Direction.NONE, e.getKeyCode());
                 break;
 
             default:
