@@ -22,6 +22,7 @@ public class MainFrame extends javax.swing.JFrame {
             winText = winner.color.name() + " player has won!";
         }
         winInfoLabel.setText(winText);
+        newGameButton.requestFocusInWindow();
     }
 
     private void startNewGame() {
