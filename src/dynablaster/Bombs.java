@@ -30,24 +30,20 @@ public class Bombs {
             return;
         }
 
-        synchronized (bombs) {
-            for (Bomb bomb : bombs) {
-                if (bomb.x == x && bomb.y == y) {
-                    return;
-                }
+        for (Bomb bomb : bombs) {
+            if (bomb.x == x && bomb.y == y) {
+                return;
             }
-
-            bombs.add(player.placeBomb(x, y));
         }
+
+        bombs.add(player.placeBomb(x, y));
     }
 
     public void update() {
-        synchronized (bombs) {
-            List<Bomb> clone = (List<Bomb>) bombs.clone();
-            for (Bomb bomb : clone) {
-                if (bomb.shouldExplode()) {
-                    explodeBomb(bomb);
-                }
+        List<Bomb> clone = (List<Bomb>) bombs.clone();
+        for (Bomb bomb : clone) {
+            if (bomb.shouldExplode()) {
+                explodeBomb(bomb);
             }
         }
     }
@@ -107,24 +103,20 @@ public class Bombs {
         final int width = bombImage.getWidth(observer) * Grid.SCALE;
         final int height = bombImage.getHeight(observer) * Grid.SCALE;
 
-        synchronized (bombs) {
-            for (Bomb bomb : bombs) {
-                g.drawImage(bombImage,
-                        bomb.x * Grid.TILE_SIZE,
-                        bomb.y * Grid.TILE_SIZE,
-                        width,
-                        height,
-                        observer);
-            }
+        for (Bomb bomb : bombs) {
+            g.drawImage(bombImage,
+                    bomb.x * Grid.TILE_SIZE,
+                    bomb.y * Grid.TILE_SIZE,
+                    width,
+                    height,
+                    observer);
         }
     }
 
     public boolean isBombAt(int x, int y) {
-        synchronized (bombs) {
-            for (Bomb bomb : bombs) {
-                if (bomb.x == x && bomb.y == y) {
-                    return true;
-                }
+        for (Bomb bomb : bombs) {
+            if (bomb.x == x && bomb.y == y) {
+                return true;
             }
         }
 
