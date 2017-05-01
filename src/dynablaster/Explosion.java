@@ -5,6 +5,8 @@ import java.awt.Image;
 import java.awt.image.ImageObserver;
 
 public class Explosion {
+    
+    public static final int DURATION = 400;
 
     public final int x;
     public final int y;
@@ -75,6 +77,7 @@ public class Explosion {
 
     private void drawPart(Graphics2D g, ImageObserver observer, Image image,
             Direction dir, boolean isEnd, int x2, int y2) {
+        
         int offset = 0;
         if (!isEnd && dir != Direction.NONE) {
             switch (dir) {
@@ -103,6 +106,11 @@ public class Explosion {
                     break;
             }
         }
+        
+        long life = (System.currentTimeMillis() - placementTime);
+        int frame = (int) ((life * 4) / DURATION);
+        offset += frame;
+        
         final int targetX = (x + x2) * Grid.TILE_SIZE;
         final int targetY = (y + y2) * Grid.TILE_SIZE;
         final int eWidth = 16;

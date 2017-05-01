@@ -27,6 +27,7 @@ public class Bombs {
 
     public void newGame() {
         bombs.clear();
+        explosions.clear();
     }
 
     public void placeBomb(Player player, int x, int y) {
@@ -54,7 +55,7 @@ public class Bombs {
 
         List<Explosion> explosionsClone = (List<Explosion>) explosions.clone();
         for (Explosion explosion : explosionsClone) {
-            if (now - explosion.placementTime >= 500) {
+            if (now - explosion.placementTime >= Explosion.DURATION) {
                 explosions.remove(explosion);
             }
         }
