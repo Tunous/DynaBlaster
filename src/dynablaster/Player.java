@@ -52,6 +52,11 @@ public class Player {
      * render the player facing correct direction.
      */
     private Direction latestDir = Direction.DOWN;
+    
+    /**
+     * The time when the movement started. Used in movement animation.
+     */
+    private long movementStart = 0;
 
     /**
      * The color of this player.
@@ -91,9 +96,14 @@ public class Player {
      * @param dir The direction in which the player should move.
      */
     public void setMovementDirection(Direction dir) {
+        if (dir == movementDirection) {
+            return;
+        }
+        
         movementDirection = dir;
         if (dir != Direction.NONE) {
             latestDir = dir;
+            movementStart = System.currentTimeMillis();
         }
     }
 
@@ -193,6 +203,15 @@ public class Player {
                 case UP:
                     offset += 9;
                     break;
+            }
+            
+            if (movementDirection != Direction.NONE) {
+                // Movement animation
+                long now = System.currentTimeMillis();
+                long timeOfMovement = (now - movementStart) / 150;
+                long frame = timeOfMovement % 3;
+                
+                offset += frame;
             }
         }
 
