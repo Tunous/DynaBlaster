@@ -52,11 +52,15 @@ public class Player {
      * render the player facing correct direction.
      */
     private Direction latestDir = Direction.DOWN;
-    
+
     /**
      * The time when the movement started. Used in movement animation.
      */
     private long movementStart = 0;
+    
+    private long deathStart = 0;
+
+    private boolean hasPlayedDeathAnimation = false;
 
     /**
      * The color of this player.
@@ -99,7 +103,7 @@ public class Player {
         if (dir == movementDirection) {
             return;
         }
-        
+
         movementDirection = dir;
         if (dir != Direction.NONE) {
             latestDir = dir;
@@ -160,7 +164,12 @@ public class Player {
      * Kill the player making him stop responding to user input.
      */
     public void kill() {
+        if (isDead()) {
+            return;
+        }
+        
         dead = true;
+        deathStart = System.currentTimeMillis();
     }
 
     /**
@@ -174,6 +183,10 @@ public class Player {
     }
 
     public void draw(Graphics2D g, ImageObserver observer) {
+        if (isDead() && hasPlayedDeathAnimation) {
+            return;
+        }
+
         int offset;
         switch (color) {
             case GREEN:
@@ -192,6 +205,15 @@ public class Player {
 
         if (isDead()) {
             offset += 12;
+
+            long now = System.currentTimeMillis();
+            long frame = (now - deathStart) / 100;
+            if (frame >= 7) {
+                hasPlayedDeathAnimation = true;
+                frame = 7;
+            }
+
+            offset += frame;
         } else {
             switch (latestDir) {
                 case RIGHT:
@@ -204,13 +226,13 @@ public class Player {
                     offset += 9;
                     break;
             }
-            
+
             if (movementDirection != Direction.NONE) {
                 // Movement animation
                 long now = System.currentTimeMillis();
                 long timeOfMovement = (now - movementStart) / 150;
                 long frame = timeOfMovement % 3;
-                
+
                 offset += frame;
             }
         }
