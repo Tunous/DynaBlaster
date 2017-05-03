@@ -10,11 +10,12 @@ import java.util.List;
 public class Bombs {
 
     private final ArrayList<Bomb> bombs = new ArrayList<>();
-    private final ArrayList<Explosion> explosions = new ArrayList<>();
+    private final ArrayList<IExplosion> explosions = new ArrayList<>();
 
     private final Image bombImage;
     private final GameController controller;
     private final Image explosionImage;
+    private final Image tileExplosionImage;
 
     public Bombs(GameController controller) {
         this.controller = controller;
@@ -22,6 +23,7 @@ public class Bombs {
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         bombImage = toolkit.getImage("bomb.png");
         explosionImage = toolkit.getImage("explosion.png");
+        tileExplosionImage = toolkit.getImage("explosion-tile.png");
     }
 
     public void newGame() {
@@ -64,8 +66,9 @@ public class Bombs {
                     observer);
         }
 
-        for (Explosion explosion : explosions) {
-            explosion.draw(g, observer, explosionImage);
+        for (IExplosion explosion : explosions) {
+            explosion.draw(g, observer,
+                    explosion instanceof Explosion ? explosionImage : tileExplosionImage);
         }
     }
 
@@ -96,7 +99,7 @@ public class Bombs {
      * {@code false}.
      */
     public boolean hasEnteredExplosion(Player player) {
-        for (Explosion explosion : explosions) {
+        for (IExplosion explosion : explosions) {
             if (explosion.isInRange(player.getX(), player.getY())) {
                 return true;
             }
@@ -119,8 +122,8 @@ public class Bombs {
     }
 
     private void removeTimedOutExplosions() {
-        List<Explosion> explosionsClone = (List<Explosion>) explosions.clone();
-        for (Explosion explosion : explosionsClone) {
+        List<IExplosion> explosionsClone = (List<IExplosion>) explosions.clone();
+        for (IExplosion explosion : explosionsClone) {
             if (explosion.hasTimedOut()) {
                 explosions.remove(explosion);
             }
@@ -148,25 +151,25 @@ public class Bombs {
         controller.players.killAt(bomb.x, bomb.y);
 
         for (int i = 1; i <= bomb.range; i++) {
-            if (destroyAt(bomb.x, bomb.y - i)) {
+            if (destroyAt(bomb.x, bomb.y - i, now)) {
                 break;
             }
             explosion.rangeUp += 1;
         }
         for (int i = 1; i <= bomb.range; i++) {
-            if (destroyAt(bomb.x, bomb.y + i)) {
+            if (destroyAt(bomb.x, bomb.y + i, now)) {
                 break;
             }
             explosion.rangeDown += 1;
         }
         for (int i = 1; i <= bomb.range; i++) {
-            if (destroyAt(bomb.x - i, bomb.y)) {
+            if (destroyAt(bomb.x - i, bomb.y, now)) {
                 break;
             }
             explosion.rangeLeft += 1;
         }
         for (int i = 1; i <= bomb.range; i++) {
-            if (destroyAt(bomb.x + i, bomb.y)) {
+            if (destroyAt(bomb.x + i, bomb.y, now)) {
                 break;
             }
             explosion.rangeRight += 1;
@@ -183,8 +186,14 @@ public class Bombs {
      * @return {@code true} if something has been destroyed; otherwise,
      * {@code false}.
      */
-    private boolean destroyAt(int x, int y) {
-        if (controller.grid.destroyTile(x, y)) {
+    private boolean destroyAt(int x, int y, long time) {
+        Tile affectedTile = controller.grid.destroyTile(x, y);
+        if (affectedTile == Tile.DESTRUCTIBLE) {
+            explosions.add(new TileExplosion(x, y, time));
+            return true;
+        }
+        
+        if (affectedTile == Tile.INDESTRUCTIBLE) {
             return true;
         }
 

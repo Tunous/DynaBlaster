@@ -160,9 +160,9 @@ public class Grid {
         }
     }
 
-    public boolean destroyTile(int x, int y) {
+    public Tile destroyTile(int x, int y) {
         if (!isValidPosition(x, y)) {
-            return false;
+            return Tile.GRASS;
         }
         
         final Tile tile = getTile(x, y);
@@ -175,7 +175,7 @@ public class Grid {
             }
 
             setTile(x, y, newTile);
-            return true;
+            return Tile.DESTRUCTIBLE;
         }
         
         // Destroy any hit powerups
@@ -183,7 +183,7 @@ public class Grid {
             setTile(x, y, Tile.GRASS);
         }
 
-        return tile == Tile.INDESTRUCTIBLE;
+        return tile;
     }
 
     public void collectPowerup(Player player) {

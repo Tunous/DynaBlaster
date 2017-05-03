@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.ImageObserver;
 
-public class Explosion {
+public class Explosion implements IExplosion {
     
     public static final int DURATION = 400;
     
@@ -26,10 +26,12 @@ public class Explosion {
         this.when = placementTime;
     }
     
+    @Override
     public boolean hasTimedOut() {
         return System.currentTimeMillis() - when >= DURATION;
     }
     
+    @Override
     public boolean isInRange(int x, int y) {
         if (this.x != x && this.y != y) {
             // If both x and y axis are different then there is no chance that
@@ -65,6 +67,7 @@ public class Explosion {
         return false;
     }
 
+    @Override
     public void draw(Graphics2D g, ImageObserver observer, Image image) {
         drawPart(g, observer, image, Direction.NONE, false, 0, 0);
 
