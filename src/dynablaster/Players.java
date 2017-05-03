@@ -9,7 +9,7 @@ import java.awt.image.ImageObserver;
 import java.util.HashMap;
 
 public class Players extends KeyAdapter {
-    
+
     public static Image IMAGE;
 
     private final HashMap<PlayerColor, Integer> latestKeyPresses = new HashMap<>();
@@ -228,6 +228,10 @@ public class Players extends KeyAdapter {
                     return;
                 }
                 lastAlivePlayer = player;
+            } else {
+                if (!player.hasPlayedDeathAnimation) {
+                    return;
+                }
             }
         }
 

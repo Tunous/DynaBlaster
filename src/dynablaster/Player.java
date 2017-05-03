@@ -60,7 +60,7 @@ public class Player {
     
     private long deathStart = 0;
 
-    private boolean hasPlayedDeathAnimation = false;
+    public boolean hasPlayedDeathAnimation = false;
 
     /**
      * The color of this player.
