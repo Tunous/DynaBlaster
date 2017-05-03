@@ -140,7 +140,7 @@ public class Bombs {
 
         // Create an explosion indicator that will kill players that walk on it.
         final long now = System.currentTimeMillis();
-        final Explosion explosion = new Explosion(bomb.x, bomb.y, now);
+        final Explosion explosion = new Explosion(bomb.x, bomb.y, bomb.range, now);
         explosions.add(explosion);
 
         bomb.setAsExploded();

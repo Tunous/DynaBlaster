@@ -7,6 +7,8 @@ import java.awt.image.ImageObserver;
 public class Explosion {
     
     public static final int DURATION = 400;
+    
+    private final int maxRange;
 
     public final int x;
     public final int y;
@@ -17,9 +19,10 @@ public class Explosion {
     public int rangeLeft = 0;
     public int rangeRight = 0;
 
-    public Explosion(int x, int y, long placementTime) {
+    public Explosion(int x, int y, int maxRange, long placementTime) {
         this.y = y;
         this.x = x;
+        this.maxRange = maxRange;
         this.when = placementTime;
     }
     
@@ -66,16 +69,16 @@ public class Explosion {
         drawPart(g, observer, image, Direction.NONE, false, 0, 0);
 
         for (int i = 1; i <= rangeUp; i++) {
-            drawPart(g, observer, image, Direction.UP, i == rangeUp, 0, -i);
+            drawPart(g, observer, image, Direction.UP, i == maxRange, 0, -i);
         }
         for (int i = 1; i <= rangeDown; i++) {
-            drawPart(g, observer, image, Direction.DOWN, i == rangeDown, 0, i);
+            drawPart(g, observer, image, Direction.DOWN, i == maxRange, 0, i);
         }
         for (int i = 1; i <= rangeLeft; i++) {
-            drawPart(g, observer, image, Direction.LEFT, i == rangeLeft, -i, 0);
+            drawPart(g, observer, image, Direction.LEFT, i == maxRange, -i, 0);
         }
         for (int i = 1; i <= rangeRight; i++) {
-            drawPart(g, observer, image, Direction.RIGHT, i == rangeRight, i, 0);
+            drawPart(g, observer, image, Direction.RIGHT, i == maxRange, i, 0);
         }
     }
 
