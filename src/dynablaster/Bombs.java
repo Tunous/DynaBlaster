@@ -44,14 +44,22 @@ public class Bombs {
     }
 
     public void draw(Graphics2D g, ImageObserver observer) {
-        final int width = bombImage.getWidth(observer) * Grid.SCALE;
-        final int height = bombImage.getHeight(observer) * Grid.SCALE;
+        final int width = 16;
+        final int height = 16;
 
         for (Bomb bomb : bombs) {
+            long lifeTime = (System.currentTimeMillis() - bomb.when) / 200;
+            int frame = (int) (lifeTime % 3);
+            int offsetX = frame * width;
+
             g.drawImage(bombImage,
                     bomb.x * Grid.TILE_SIZE,
                     bomb.y * Grid.TILE_SIZE,
-                    width,
+                    bomb.x * Grid.TILE_SIZE + width * Grid.SCALE,
+                    bomb.y * Grid.TILE_SIZE + height * Grid.SCALE,
+                    offsetX,
+                    0,
+                    offsetX + width,
                     height,
                     observer);
         }

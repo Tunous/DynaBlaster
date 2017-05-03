@@ -19,7 +19,7 @@ public class Bomb {
     /**
      * The time when this bomb has been placed.
      */
-    private final long when;
+    public final long when;
 
     /**
      * The horizontal coordinate of the bomb position. (In tiles)
