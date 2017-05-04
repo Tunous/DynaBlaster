@@ -54,8 +54,6 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setPreferredSize(gamePanel.getPreferredSize());
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        endScreen.setPreferredSize(gamePanel.getPreferredSize());
-
         winInfoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         winInfoLabel.setText("Game Over!");
 
@@ -87,7 +85,9 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.add(endScreen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 420, 420));
+        jPanel1.add(endScreen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 410, 410));
+
+        gamePanel.setPreferredSize(gamePanel.getPreferredSize());
 
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
