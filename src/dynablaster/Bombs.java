@@ -7,6 +7,9 @@ import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Klasa odpowiedzialna za zarządzanie wszystkimi bombami.
+ */
 public class Bombs {
 
     private final ArrayList<Bomb> bombs = new ArrayList<>();
@@ -26,11 +29,21 @@ public class Bombs {
         tileExplosionImage = toolkit.getImage("res/explosion-tile.png");
     }
 
+    /**
+     * Czyści wszystkie bomby i eksplozje aby można było rozpocząć nową grę.
+     */
     public void newGame() {
         bombs.clear();
         explosions.clear();
     }
 
+    /**
+     * Ustawia nową bombę na podanej pozycji.
+     *
+     * @param player Gracz który będzie właścicielem bomby.
+     * @param x Współrzędna x pozycji bomby.
+     * @param y Współrzędna y pozycji bomby.
+     */
     public void placeBomb(Player player, int x, int y) {
         if (!player.canPlaceBombs()) {
             return;
@@ -72,45 +85,40 @@ public class Bombs {
         }
     }
 
-    /**
-     * Tells whether there is a bomb at the specified tile coordinates.
-     *
-     * @param x The x tile coordinate.
-     * @param y The y tile coordinate.
-     * @return {@code true} if there is a bomb at the specified position;
-     * otherwise, {@code false}.
-     */
-    private boolean isBombAt(int x, int y) {
-        for (Bomb bomb : bombs) {
-            if (bomb.x == x && bomb.y == y) {
-                return true;
-            }
-        }
-
-        return false;
+    public void update() {
+        detonateAllBombs();
+        removeTimedOutExplosions();
     }
-    
+
+    /**
+     * Zwraca czy gracz może wejść na pozycję o danych współrzędnych.
+     *
+     * @param x Współrzędna x.
+     * @param y Współrzędna y.
+     * @return {@code true} jeśli gracz może wejść na daną pozycję.
+     */
     public boolean canMoveTo(int x, int y) {
         if (isBombAt(x, y)) {
             return false;
         }
-        
+
         for (IExplosion explosion : explosions) {
-            if (explosion instanceof TileExplosion && explosion.isInRange(x, y)) {
+            // Gracz nie może wchodzić na wybuchające ściany.
+            if (explosion instanceof TileExplosion
+                    && explosion.isInRange(x, y)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     /**
-     * Return whether the specified player has entered area of effect of any
-     * explosion.
+     * Zwraca czy podany gracz znajduje się na pozycji objętej działaniem
+     * jakiejkolwiek eksplozji.
      *
-     * @param player The player for which to perform the check.
-     * @return {@code true} if player is standing on explosion; otherwise,
-     * {@code false}.
+     * @param player Gracz dla którego pozycji dokonać sprawdzenia.
+     * @return {@code true} jeśli gracz znajduje się w zasięgu eksplozji.
      */
     public boolean hasEnteredExplosion(Player player) {
         for (IExplosion explosion : explosions) {
@@ -121,11 +129,9 @@ public class Bombs {
         return false;
     }
 
-    public void update() {
-        detonateAllBombs();
-        removeTimedOutExplosions();
-    }
-
+    /**
+     * Detonuje wszystkie bomby.
+     */
     private void detonateAllBombs() {
         List<Bomb> currentBombs = (List<Bomb>) bombs.clone();
         for (Bomb bomb : currentBombs) {
@@ -135,6 +141,25 @@ public class Bombs {
         }
     }
 
+    /**
+     * Zwraca czy na podanych współrzędnych znajduję się aktualnie jakaś bomba.
+     *
+     * @param x Współrzędna x bomby.
+     * @param y Współrzędna y bomby.
+     */
+    private boolean isBombAt(int x, int y) {
+        for (Bomb bomb : bombs) {
+            if (bomb.x == x && bomb.y == y) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Usuwa zakończone eksplozje.
+     */
     private void removeTimedOutExplosions() {
         List<IExplosion> explosionsClone = (List<IExplosion>) explosions.clone();
         for (IExplosion explosion : explosionsClone) {
@@ -145,19 +170,22 @@ public class Bombs {
     }
 
     /**
-     * Detonate the specified bomb causing everything that is in its range to be
-     * destroyed.
+     * Detonuje wskazaną bombę powodując wysadzenie wszystkiego co jest w
+     * zasięgu jej eksplozji.
      *
-     * @param bomb The bomb to detonate.
+     * @param bomb Bomba do zdetonowania.
+     * @param currentBombs Lista bomb jakie znajdowały się planszy w przed
+     * detonacją.
      */
     private void detonateBomb(Bomb bomb, List<Bomb> currentBombs) {
         if (bomb.hasExploded()) {
             return;
         }
 
-        // Create an explosion indicator that will kill players that walk on it.
-        final long now = System.currentTimeMillis();
-        final Explosion explosion = new Explosion(bomb.x, bomb.y, bomb.range, now);
+        // Stwórz eksplozję która zabije graczy którzy na nią wejdą w czasie
+        // działania wybuchu.
+        long now = System.currentTimeMillis();
+        Explosion explosion = new Explosion(bomb.x, bomb.y, bomb.range, now);
         explosions.add(explosion);
 
         bomb.setAsExploded();
@@ -191,22 +219,20 @@ public class Bombs {
     }
 
     /**
-     * Destroy everything that is located at the specified tile coordinates.
-     * This includes destroying tiles, detonating other bombs and killing
-     * players.
+     * Niszczy wszystko co jest zlokalizowane na podanych współrzędnych.
      *
-     * @param x The x coordinate of the tile.
-     * @param y The y coordinate of the tile.
-     * @return {@code true} if something has been destroyed; otherwise,
-     * {@code false}.
+     * @param x Współrzędna x.
+     * @param y Współrzędna y.
+     * @return {@code true} jeśli coś zostało zniszczone.
      */
-    private boolean destroyAt(int x, int y, long time, List<Bomb> currentBombs) {
+    private boolean destroyAt(int x, int y, long time,
+            List<Bomb> currentBombs) {
         Tile affectedTile = controller.grid.destroyTile(x, y);
         if (affectedTile == Tile.DESTRUCTIBLE) {
             explosions.add(new TileExplosion(x, y, time));
             return true;
         }
-        
+
         if (affectedTile == Tile.INDESTRUCTIBLE) {
             return true;
         }

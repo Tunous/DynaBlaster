@@ -2,37 +2,40 @@ package dynablaster;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Klasa reprezentująca bombę postawioną na planszy.
+ */
 public class Bomb {
 
     private static final long TIME_TO_EXPLOSION = TimeUnit.SECONDS.toMillis(2);
 
     /**
-     * The player which placed this bomb.
+     * Gracz który postawił tą bombę.
      */
     private final Player owner;
 
     /**
-     * Tells whether the bomb has already exploded.
+     * Oznacza czy bomba już eksplodowała.
      */
     private boolean hasExploded = false;
 
     /**
-     * The time when this bomb has been placed.
+     * Czas (w millisekundach) kiedy bomba została postawiona.
      */
     public final long when;
 
     /**
-     * The horizontal coordinate of the bomb position. (In tiles)
+     * Współrzędna x pozycji bomby.
      */
     public final int x;
 
     /**
-     * The vertical coordinate of the bomb position. (In tiles)
+     * Współrzędna y pozycji bomby.
      */
     public final int y;
 
     /**
-     * The distance (in tiles) which the bomb can reach with its explosion.
+     * Dystans jaki osiąga eksplozja tej bomby.
      */
     public final int range;
 
@@ -46,27 +49,30 @@ public class Bomb {
     }
 
     /**
-     * Tells whether the bomb should explode.
+     * Zwraca czy bomba powinna już eksplodować.
      *
-     * @return {@code true} if the bomb should explode; otherwise,
-     * {@code false}.
+     * @return {@code true} jeśli bomba powinna eksplodować.
      */
     public boolean shouldExplode() {
         return System.currentTimeMillis() - when >= TIME_TO_EXPLOSION;
     }
 
     /**
-     * Marks this bomb as exploded.
+     * Oznacza bombę jako eksplodowaną.
      */
     public void setAsExploded() {
+        if (hasExploded) {
+            return;
+        }
+
         hasExploded = true;
         owner.addBomb();
     }
 
     /**
-     * Tells whether the bomb has already exploded.
+     * Zwraca czy bomba już eksplodowała.
      *
-     * @return {@code true} if the bomb has exploded; otherwise {@code false}.
+     * @return {@code true} jeśli bomba eksplodowała.
      */
     public boolean hasExploded() {
         return hasExploded;

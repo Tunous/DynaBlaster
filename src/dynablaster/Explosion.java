@@ -34,8 +34,6 @@ public class Explosion implements IExplosion {
     @Override
     public boolean isInRange(int x, int y) {
         if (this.x != x && this.y != y) {
-            // If both x and y axis are different then there is no chance that
-            // this tile is in range of the bomb.
             return false;
         }
         
@@ -87,7 +85,6 @@ public class Explosion implements IExplosion {
 
     private void drawPart(Graphics2D g, ImageObserver observer, Image image,
             Direction dir, boolean isEnd, int x2, int y2) {
-        
         int offset = 0;
         if (!isEnd && dir != Direction.NONE) {
             switch (dir) {
@@ -121,16 +118,16 @@ public class Explosion implements IExplosion {
         int frame = (int) ((life * 4) / DURATION);
         offset += frame;
         
-        final int targetX = (x + x2) * Grid.TILE_SIZE;
-        final int targetY = (y + y2) * Grid.TILE_SIZE;
-        final int eWidth = 16;
-        final int eHeight = 16;
+        int targetX = (x + x2) * Grid.TILE_SIZE;
+        int targetY = (y + y2) * Grid.TILE_SIZE;
+        int eWidth = 16;
+        int eHeight = 16;
 
-        final int offsetX = offset % 20;
-        final int offsetY = offset / 20;
+        int offsetX = offset % 20;
+        int offsetY = offset / 20;
 
-        final int sourceX = offsetX * eWidth;
-        final int sourceY = offsetY * eHeight;
+        int sourceX = offsetX * eWidth;
+        int sourceY = offsetY * eHeight;
 
         g.drawImage(image,
                 targetX,

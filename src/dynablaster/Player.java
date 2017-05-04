@@ -3,6 +3,9 @@ package dynablaster;
 import java.awt.Graphics2D;
 import java.awt.image.ImageObserver;
 
+/**
+ * Klasa reprezentująca gracza.
+ */
 public class Player {
 
     private static final int PLAYER_SIZE = 23;
@@ -10,60 +13,58 @@ public class Player {
     private static final int PLAYER_Y_OFFSET = 9;
 
     /**
-     * The x coordinate specifying where the player should be drawn on the
-     * board. (In pixels)
+     * Współrzędna x w pikselach pozycji na której znajduje się gracz.
      */
     private int drawX;
 
     /**
-     * The y coordinate specifying where the player should be drawn on the
-     * board. (In pixels)
+     * Współrzędna y w pikselach pozycji na której znajduje się gracz.
      */
     private int drawY;
 
     /**
-     * The amount of pixels the player should be moved on each movement action.
-     */
-    private int speed = Grid.SCALE;
-
-    /**
-     * The amount of bomb the player is currently able to place.
+     * Ilość bomb jaką ten gracz może aktualnie postawić.
      */
     private int bombs = 1;
 
     /**
-     * The maximum explosion range of the bombs placed by the player.
+     * Maksymalny zasięg bomb postawionych przez tego gracza.
      */
     private int bombRange = 1;
 
     /**
-     * Whether the player is currently dead.
+     * Oznacza czy gracz zginął.
      */
     private boolean dead = false;
 
     /**
-     * The current movement direction of the player. Used to move him around the
-     * board every frame.
+     * Kierunek w którym gracz aktualnie się porusza.
      */
     private Direction movementDirection = Direction.NONE;
 
     /**
-     * The latest movement direction other than {@code Direction.NONE}. Used to
-     * render the player facing correct direction.
+     * Kierónek różny od {@code Direction.NONE} w którym ostatnio poruszał się
+     * gracz.
      */
     private Direction latestDir = Direction.DOWN;
 
     /**
-     * The time when the movement started. Used in movement animation.
+     * Czas kiedy gracz zaczął się poruszać.
      */
     private long movementStart = 0;
-    
+
+    /**
+     * Czas kiedy gracz umarł.
+     */
     private long deathStart = 0;
 
+    /**
+     * Oznacza czy animacja śmierci się zakończyła.
+     */
     public boolean hasPlayedDeathAnimation = false;
 
     /**
-     * The color of this player.
+     * Kolor tego gracza.
      */
     public final PlayerColor color;
 
@@ -75,29 +76,29 @@ public class Player {
     }
 
     /**
-     * Get the horizontal position of the player, in tiles.
+     * Zwraca współrzędną x gracza .
      *
-     * @return The horizontal position of the player, in tiles.
+     * @return Współrzędna x.
      */
     public int getX() {
         return (drawX + Grid.TILE_SIZE / 2) / Grid.TILE_SIZE + 1;
     }
 
     /**
-     * Get the vertical position of the player, in tiles.
+     * Zwraca współrzędną y gracza .
      *
-     * @return The vertical position of the player, in tiles.
+     * @return Współrzędna y.
      */
     public int getY() {
         return (drawY + Grid.TILE_SIZE / 2) / Grid.TILE_SIZE + 1;
     }
 
     /**
-     * Set the current movement direction of the player. If the specified
-     * direction is different than {@code Direction.NONE} then the player will
-     * move in that direction on every call to the {@code update()} method.
+     * Ustawia aktualny kierunek ruchu gracza. Jeśli podany kierunek jest różny
+     * od {@code Direction.NONE} to gracz będzię się poruszał za każdym razem
+     * gdzy zostanie wywołana funkcja {@code update()}.
      *
-     * @param dir The direction in which the player should move.
+     * @param dir Kierunek w którym gracz ma się poruszać.
      */
     public void setMovementDirection(Direction dir) {
         if (dir == movementDirection) {
@@ -112,25 +113,19 @@ public class Player {
     }
 
     /**
-     * Increase the movement speed of the player.
-     */
-    public void increaseSpeed() {
-        speed += Grid.SCALE;
-    }
-
-    /**
-     * Increase the range of the bombs placed by the player by one.
+     * Zwiększa zasięg eksplozji bomb stawianych przez tego gracza o 1.
      */
     public void increaseRange() {
         bombRange += 1;
     }
 
     /**
-     * Try to place a bomb at the tile with the specified coordinates.
+     * Próbuje postawić bombę na podanych współrzędnych
      *
-     * @param bombX The horizontal coordinate of the tile.
-     * @param bombY The vertical coordinate of the tile.
-     * @return The placed bomb or {@code null} if no bomb was placed.
+     * @param bombX Współrzędna x.
+     * @param bombY Współrzędna y.
+     * @return Postawiona bomba albo {@code null} jeśli nie postawiono żadnej
+     * bomby.
      */
     public Bomb placeBomb(int bombX, int bombY) {
         if (!canPlaceBombs()) {
@@ -143,40 +138,37 @@ public class Player {
     }
 
     /**
-     * Increase the amount of bombs that the player can place at the same time
-     * by one.
+     * Zwiększa ilość bomb jaką gracz może postawić o 1.
      */
     public void addBomb() {
         bombs += 1;
     }
 
     /**
-     * Tells whether the player is able to place bombs.
+     * Zwraca czy gracz może stawiać bomby..
      *
-     * @return {@code true} if the player can place bombs; otherwise,
-     * {@code false}.
+     * @return {@code true} jeśli gracz może stawiać bomby.
      */
     public boolean canPlaceBombs() {
         return bombs > 0;
     }
 
     /**
-     * Kill the player making him stop responding to user input.
+     * Zabija gracza.
      */
     public void kill() {
         if (isDead()) {
             return;
         }
-        
+
         dead = true;
         deathStart = System.currentTimeMillis();
     }
 
     /**
-     * Tells whether the player has been killed.
+     * Zwraca czy gracz został zabity.
      *
-     * @return {@code true} if the player has been killed; otherwise,
-     * {@code false}.
+     * @return {@code true} jeśli gracz został zabity.
      */
     public boolean isDead() {
         return dead;
@@ -228,7 +220,7 @@ public class Player {
             }
 
             if (movementDirection != Direction.NONE) {
-                // Movement animation
+                // Animacja ruchu
                 long now = System.currentTimeMillis();
                 long timeOfMovement = (now - movementStart) / 150;
                 long frame = timeOfMovement % 3;
@@ -274,19 +266,19 @@ public class Player {
     }
 
     /**
-     * Align the player on the grid and move once aligned.
+     * Wyśrodkowuje gracza na pozycji i rozpoczyna ruch.
      *
-     * @param grid The game grid used to check for collisions.
-     * @param tileX The x position of the player, in tiles.
-     * @param tileY The y position of the player, in tiles.
-     * @param modX The horizontal miss-alignment of the player.
-     * @param modY The vertical miss-alignment of the player.
+     * @param grid Plansza gry.
+     * @param tileX Współrzędna x.
+     * @param tileY Współrzędna y.
+     * @param modX Poziome przesunięcie gracza.
+     * @param modY Pionowe przesunięcie gracza.
      */
     private void alignAndMove(Grid grid, int tileX, int tileY, int modX,
             int modY) {
         if (canMoveStraight(grid, tileX, tileY)) {
-            // - Align the player in axis opposite to the movement direction
-            // - Once aligned start moving
+            // - Wyśrodkuj gracza w osi przeciwnej do osi ruchu
+            // - Rozpocznij ruch po wyśrodkowaniu
             align(!movementDirection.isHorizontal(), false, true);
             return;
         }
@@ -299,29 +291,28 @@ public class Player {
                 && mod != 0
                 && canMoveToSide(grid, tileX, tileY, Direction.RIGHT);
 
-        // Player can't move in a straight line but is not centered and can be
-        // pushed to one side to start moving in a straight line
+        // Gracz nie może poruszyć się prosto ale może zostać przesunięty w bok
+        // aby poruszyć się prosto.
         if (canMoveToLeftSide || canMoveToRightSide) {
-            // - Push the player to the block on the side
-            // - Once pushed and aligned start moving
+            // - Przesuń gracza w bok
+            // - Rozpocznij ruch po wyśrodkowaniu
             align(!movementDirection.isHorizontal(), true, true);
             return;
         }
 
-        // Only align the player on direction of the movement.
-        // This makes sure that the player always moves as far as possible,
-        // even with high movement speed.
+        // Wyśrodkuj gracza w kierunku ruch co powoduje że poruszy się on tak
+        // aby dotknąć ściany.
         align(movementDirection.isHorizontal(), false, false);
     }
 
     /**
-     * Returns whether the player can move through the block located in front of
-     * him.
+     * Zwraca czy gracz może przejść przez pozycję znajdującą się na wprost od
+     * niego.
      *
-     * @param grid The game grid used to check for collisions.
-     * @param tileX The x position of the player, in tiles.
-     * @param tileY The y position of the player, in tiles.
-     * @return <c>true</c> if the player can move; otherwise, <c>false</c>.
+     * @param grid Plansza gry.
+     * @param tileX Współrzędna x.
+     * @param tileY Współrzędna y.
+     * @return {@code true} jeśli gracz może się poruszyć.
      */
     private boolean canMoveStraight(Grid grid, int tileX, int tileY) {
         switch (movementDirection) {
@@ -343,21 +334,21 @@ public class Player {
     }
 
     /**
-     * Returns whether the player can move through the block located next to the
-     * block in front of him.
+     * Zwraca czy gracz może przejść przez pozycję znajdującą się obok elementu
+     * na wprost od niego.
      *
-     * @param grid The game grid used to check for collisions.
-     * @param tileX The x position of the player, in tiles.
-     * @param tileY The y position of the player, in tiles.
-     * @param side If <c>Direction.RIGHT</c> check the block located in
-     * clockwise direction to the block in front of the player. Otherwise check
-     * the block in the counter-clockwise direction.
-     * @return <c>true</c> if the player can move; otherwise, <c>false</c>.
+     * @param grid Plansza gry.
+     * @param tileX Współrzędna x.
+     * @param tileY Współrzędna y.
+     * @param side Jeśli {@code Direction.RIGHT} to funcja sprawdza pozycję w
+     * kierunku zgodnym z kierunkiem zegara od elementu na wprost od gracza. W
+     * przeciwnym wypadku sprawdza pozycję w kierunku przeciwnym do kierunku
+     * ruchu zegara.
+     * @return {@code true} jeślli gracz może się poruszyć.
      */
     private boolean canMoveToSide(Grid grid, int tileX, int tileY,
             Direction side) {
 
-        // Side must be a horizontal direction
         assert side.isHorizontal();
 
         boolean checkClockwise = side == Direction.RIGHT;
@@ -387,11 +378,11 @@ public class Player {
     /**
      * Align the player to the grid and start moving if possible.
      *
-     * @param horizontal If <c>true</c> move the player horizontally; otherwise
-     * move him vertically.
-     * @param reverse If <c>true</c> push the player away from his current
-     * position; otherwise align him to the center of the tile.
-     * @param moveIfAligned Whether the player should move once aligned.
+     * @param horizontal Jeśli {@code true} to gracz porusza się poziomo.
+     * @param reverse Jeśli {@code true} to gracz powinien być wyśrodkowany tak
+     * aby nie znajdował się na aktualnej pozycji.
+     * @param moveIfAligned Oznacza czy gracz powinien zacząć się poruszać po
+     * jego wyśrodkowaniu.
      */
     private void align(boolean horizontal, boolean reverse,
             boolean moveIfAligned) {
@@ -405,7 +396,7 @@ public class Player {
             return;
         }
 
-        int alignSpeed = Math.min(mod, speed);
+        int alignSpeed = Math.min(mod, Grid.SCALE);
 
         if (!reverse && mod < Grid.TILE_SIZE / 2
                 || reverse && mod >= Grid.TILE_SIZE / 2) {
@@ -424,21 +415,21 @@ public class Player {
     }
 
     /**
-     * Move the player without performing any checks.
+     * Przesuń gracza bez dokonywania żadnych sprawdzeń.
      */
     private void moveInternal() {
         switch (movementDirection) {
             case UP:
-                drawY -= speed;
+                drawY -= Grid.SCALE;
                 break;
             case DOWN:
-                drawY += speed;
+                drawY += Grid.SCALE;
                 break;
             case LEFT:
-                drawX -= speed;
+                drawX -= Grid.SCALE;
                 break;
             case RIGHT:
-                drawX += speed;
+                drawX += Grid.SCALE;
                 break;
             default:
                 break;

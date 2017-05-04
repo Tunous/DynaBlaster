@@ -37,7 +37,7 @@ public class Players extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            // WHITE player controls
+            // WHITE
             case KeyEvent.VK_UP:
                 setMovementDirection(PlayerColor.WHITE, Direction.UP, e.getKeyCode());
                 break;
@@ -55,7 +55,7 @@ public class Players extends KeyAdapter {
                 placeBomb(PlayerColor.WHITE);
                 break;
 
-            // GREEN player controls
+            // GREEN
             case KeyEvent.VK_W:
                 setMovementDirection(PlayerColor.GREEN, Direction.UP, e.getKeyCode());
                 break;
@@ -73,7 +73,7 @@ public class Players extends KeyAdapter {
                 placeBomb(PlayerColor.GREEN);
                 break;
 
-            // RED player controls
+            // RED
             case KeyEvent.VK_I:
                 setMovementDirection(PlayerColor.RED, Direction.UP, e.getKeyCode());
                 break;
@@ -91,7 +91,7 @@ public class Players extends KeyAdapter {
                 placeBomb(PlayerColor.RED);
                 break;
 
-            // BLUE player controls
+            // BLUE
             case KeyEvent.VK_NUMPAD8:
                 setMovementDirection(PlayerColor.BLUE, Direction.UP, e.getKeyCode());
                 break;
@@ -117,7 +117,7 @@ public class Players extends KeyAdapter {
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
-            // WHITE player controls
+            // WHITE
             case KeyEvent.VK_UP:
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_LEFT:
@@ -125,7 +125,7 @@ public class Players extends KeyAdapter {
                 setMovementDirection(PlayerColor.WHITE, Direction.NONE, e.getKeyCode());
                 break;
 
-            // GREEN player controls
+            // GREEN
             case KeyEvent.VK_W:
             case KeyEvent.VK_S:
             case KeyEvent.VK_A:
@@ -133,7 +133,7 @@ public class Players extends KeyAdapter {
                 setMovementDirection(PlayerColor.GREEN, Direction.NONE, e.getKeyCode());
                 break;
 
-            // RED player controls
+            // RED
             case KeyEvent.VK_I:
             case KeyEvent.VK_K:
             case KeyEvent.VK_J:
@@ -141,7 +141,7 @@ public class Players extends KeyAdapter {
                 setMovementDirection(PlayerColor.RED, Direction.NONE, e.getKeyCode());
                 break;
 
-            // BLUE player controls
+            // BLUE
             case KeyEvent.VK_NUMPAD8:
             case KeyEvent.VK_NUMPAD2:
             case KeyEvent.VK_NUMPAD4:
@@ -181,10 +181,10 @@ public class Players extends KeyAdapter {
     }
 
     /**
-     * Kill all players that are located at the tile with specified coordinates.
+     * Zabija wszystkich graczy znajdujących się na podanej pozycji.
      *
-     * @param x The horizontal position, in tiles.
-     * @param y The vertical position, in tiles.
+     * @param x Współrzędna x.
+     * @param y Współrzędna y.
      */
     public void killAt(int x, int y) {
         for (Player player : players.values()) {
@@ -213,7 +213,7 @@ public class Players extends KeyAdapter {
     }
 
     /**
-     * Check if someone has won this round.
+     * Sprawdza czy ktoś wygrał.
      */
     private void checkWinner() {
         Player lastAlivePlayer = null;
@@ -223,15 +223,11 @@ public class Players extends KeyAdapter {
             if (!player.isDead()) {
                 alivePlayersCount += 1;
                 if (alivePlayersCount > 1) {
-                    // More than 1 alive player means that the game is still
-                    // running. Do not do anything.
                     return;
                 }
                 lastAlivePlayer = player;
-            } else {
-                if (!player.hasPlayedDeathAnimation) {
-                    return;
-                }
+            } else if (!player.hasPlayedDeathAnimation) {
+                return;
             }
         }
 
