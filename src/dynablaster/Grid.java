@@ -34,12 +34,12 @@ public class Grid {
         this.controller = controller;
 
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        indestructible = toolkit.getImage("indestructible.png");
-        grass = toolkit.getImage("grass.png");
-        grassShadow = toolkit.getImage("grass-shadow.png");
-        destructible = toolkit.getImage("destructible.png");
-        powerupBombImage = toolkit.getImage("powerup-bomb.png");
-        powerupRangeImage = toolkit.getImage("powerup-range.png");
+        indestructible = toolkit.getImage("res/indestructible.png");
+        grass = toolkit.getImage("res/grass.png");
+        grassShadow = toolkit.getImage("res/grass-shadow.png");
+        destructible = toolkit.getImage("res/destructible.png");
+        powerupBombImage = toolkit.getImage("res/powerup-bomb.png");
+        powerupRangeImage = toolkit.getImage("res/powerup-range.png");
     }
 
     public void newGame() {

@@ -21,9 +21,9 @@ public class Bombs {
         this.controller = controller;
 
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        bombImage = toolkit.getImage("bomb.png");
-        explosionImage = toolkit.getImage("explosion.png");
-        tileExplosionImage = toolkit.getImage("explosion-tile.png");
+        bombImage = toolkit.getImage("res/bomb.png");
+        explosionImage = toolkit.getImage("res/explosion.png");
+        tileExplosionImage = toolkit.getImage("res/explosion-tile.png");
     }
 
     public void newGame() {

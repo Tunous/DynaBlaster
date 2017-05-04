@@ -21,7 +21,7 @@ public class Players extends KeyAdapter {
         this.controller = controller;
 
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        IMAGE = toolkit.getImage("players.png");
+        IMAGE = toolkit.getImage("res/players.png");
 
         resetPlayers();
     }
