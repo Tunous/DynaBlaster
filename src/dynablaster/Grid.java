@@ -111,7 +111,7 @@ public class Grid {
             return false;
         }
 
-        return !controller.bombs.isBombAt(x, y);
+        return controller.bombs.canMoveTo(x, y);
     }
 
     private boolean isSolidBlockAt(int x, int y) {

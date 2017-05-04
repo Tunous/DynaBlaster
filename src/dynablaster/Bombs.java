@@ -80,7 +80,7 @@ public class Bombs {
      * @return {@code true} if there is a bomb at the specified position;
      * otherwise, {@code false}.
      */
-    public boolean isBombAt(int x, int y) {
+    private boolean isBombAt(int x, int y) {
         for (Bomb bomb : bombs) {
             if (bomb.x == x && bomb.y == y) {
                 return true;
@@ -88,6 +88,20 @@ public class Bombs {
         }
 
         return false;
+    }
+    
+    public boolean canMoveTo(int x, int y) {
+        if (isBombAt(x, y)) {
+            return false;
+        }
+        
+        for (IExplosion explosion : explosions) {
+            if (explosion instanceof TileExplosion && explosion.isInRange(x, y)) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     /**
