@@ -113,10 +113,10 @@ public class Bombs {
     }
 
     private void detonateAllBombs() {
-        List<Bomb> clone = (List<Bomb>) bombs.clone();
-        for (Bomb bomb : clone) {
+        List<Bomb> currentBombs = (List<Bomb>) bombs.clone();
+        for (Bomb bomb : currentBombs) {
             if (bomb.shouldExplode()) {
-                detonateBomb(bomb);
+                detonateBomb(bomb, currentBombs);
             }
         }
     }
@@ -136,7 +136,7 @@ public class Bombs {
      *
      * @param bomb The bomb to detonate.
      */
-    private void detonateBomb(Bomb bomb) {
+    private void detonateBomb(Bomb bomb, List<Bomb> currentBombs) {
         if (bomb.hasExploded()) {
             return;
         }
@@ -151,25 +151,25 @@ public class Bombs {
         controller.players.killAt(bomb.x, bomb.y);
 
         for (int i = 1; i <= bomb.range; i++) {
-            if (destroyAt(bomb.x, bomb.y - i, now)) {
+            if (destroyAt(bomb.x, bomb.y - i, now, currentBombs)) {
                 break;
             }
             explosion.rangeUp += 1;
         }
         for (int i = 1; i <= bomb.range; i++) {
-            if (destroyAt(bomb.x, bomb.y + i, now)) {
+            if (destroyAt(bomb.x, bomb.y + i, now, currentBombs)) {
                 break;
             }
             explosion.rangeDown += 1;
         }
         for (int i = 1; i <= bomb.range; i++) {
-            if (destroyAt(bomb.x - i, bomb.y, now)) {
+            if (destroyAt(bomb.x - i, bomb.y, now, currentBombs)) {
                 break;
             }
             explosion.rangeLeft += 1;
         }
         for (int i = 1; i <= bomb.range; i++) {
-            if (destroyAt(bomb.x + i, bomb.y, now)) {
+            if (destroyAt(bomb.x + i, bomb.y, now, currentBombs)) {
                 break;
             }
             explosion.rangeRight += 1;
@@ -186,7 +186,7 @@ public class Bombs {
      * @return {@code true} if something has been destroyed; otherwise,
      * {@code false}.
      */
-    private boolean destroyAt(int x, int y, long time) {
+    private boolean destroyAt(int x, int y, long time, List<Bomb> currentBombs) {
         Tile affectedTile = controller.grid.destroyTile(x, y);
         if (affectedTile == Tile.DESTRUCTIBLE) {
             explosions.add(new TileExplosion(x, y, time));
@@ -199,10 +199,9 @@ public class Bombs {
 
         controller.players.killAt(x, y);
 
-        List<Bomb> clone = (List<Bomb>) bombs.clone();
-        for (Bomb otherBomb : clone) {
+        for (Bomb otherBomb : currentBombs) {
             if (otherBomb.x == x && otherBomb.y == y) {
-                detonateBomb(otherBomb);
+                detonateBomb(otherBomb, currentBombs);
                 return true;
             }
         }
