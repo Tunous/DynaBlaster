@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class Bomb {
 
+    /**
+     * Czas przez jaki bomba jest postawiona zanim wybuchnie.
+     */
     private static final long TIME_TO_EXPLOSION = TimeUnit.SECONDS.toMillis(2);
 
     /**

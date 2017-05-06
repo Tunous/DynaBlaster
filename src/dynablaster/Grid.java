@@ -54,15 +54,19 @@ public class Grid {
             for (int y = 0; y < WIDTH; y++) {
                 Tile tile;
                 if (x == 0 || y == 0 || x == WIDTH - 1 || y == HEIGHT - 1) {
-                    // Game border
+                    // Ramka
                     tile = Tile.INDESTRUCTIBLE;
                 } else if (x % 2 == 0 && y % 2 == 0) {
-                    // Middle columns
+                    // Wewnętrzne kolumny
+                    tile = Tile.INDESTRUCTIBLE;
+                } else if (x > 1 && x < WIDTH - 2 && y > 1 && y < HEIGHT - 2
+                        && (x % 2 == 0 || y % 2 == 0)
+                        && random.nextInt(6) == 0) {
+                    // Losowe niezniszczlne blokady
                     tile = Tile.INDESTRUCTIBLE;
                 } else if (!isLockedPoint(x, y) && random.nextInt(3) != 0) {
                     tile = Tile.DESTRUCTIBLE;
                 } else {
-                    // Grass
                     tile = Tile.GRASS;
                 }
 

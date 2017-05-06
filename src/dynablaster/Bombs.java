@@ -12,11 +12,18 @@ import java.util.List;
  */
 public class Bombs {
 
+    /**
+     * Lista wszystkich bomb aktualnie znajdujących się na planszy.
+     */
     private final ArrayList<Bomb> bombs = new ArrayList<>();
+    
+    /**
+     * Lista wszystkich trwających eksplozji.
+     */
     private final ArrayList<IExplosion> explosions = new ArrayList<>();
 
-    private final Image bombImage;
     private final GameController controller;
+    private final Image bombImage;
     private final Image explosionImage;
     private final Image tileExplosionImage;
 
