@@ -13,14 +13,12 @@ import javax.swing.Timer;
 
 public class MainPanel extends JPanel {
 
-    public final GameController gameController = new GameController();
+    private GameController gameController;
     private final Timer gameTimer = new Timer(17, new TickListener());
-
-    public MainPanel() {
-        initComponents();
-    }
-
-    private void initComponents() {
+    
+    public void setGameController(GameController controller) {
+        gameController = controller;
+        
         gameController.registerKeyListener(this);
         gameTimer.start();
 
@@ -30,10 +28,6 @@ public class MainPanel extends JPanel {
     @Override
     public Dimension getPreferredSize() {
         return Grid.SIZE;
-    }
-
-    public void setFrame(MainFrame frame) {
-        gameController.setFrame(frame);
     }
 
     @Override

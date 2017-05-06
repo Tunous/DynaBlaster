@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Players extends KeyAdapter {
 
@@ -14,6 +15,7 @@ public class Players extends KeyAdapter {
 
     private final HashMap<PlayerColor, Integer> latestKeyPresses = new HashMap<>();
     private final HashMap<PlayerColor, Player> players = new HashMap<>();
+    private final HashSet<PlayerColor> enabledPlayers = new HashSet<>();
 
     private final GameController controller;
 
@@ -23,15 +25,35 @@ public class Players extends KeyAdapter {
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         IMAGE = toolkit.getImage("res/players.png");
 
+        enabledPlayers.add(PlayerColor.WHITE);
+        enabledPlayers.add(PlayerColor.GREEN);
         resetPlayers();
     }
 
     public final void resetPlayers() {
         players.clear();
-        players.put(PlayerColor.WHITE, new Player(PlayerColor.WHITE, 0, 0));
-        players.put(PlayerColor.GREEN, new Player(PlayerColor.GREEN, 10, 10));
-        players.put(PlayerColor.RED, new Player(PlayerColor.RED, 10, 0));
-        players.put(PlayerColor.BLUE, new Player(PlayerColor.BLUE, 0, 10));
+
+        if (enabledPlayers.contains(PlayerColor.WHITE)) {
+            players.put(PlayerColor.WHITE, new Player(PlayerColor.WHITE, 0, 0));
+        }
+
+        if (enabledPlayers.contains(PlayerColor.GREEN)) {
+            players.put(PlayerColor.GREEN, new Player(PlayerColor.GREEN, 10, 10));
+        }
+        if (enabledPlayers.contains(PlayerColor.RED)) {
+            players.put(PlayerColor.RED, new Player(PlayerColor.RED, 10, 0));
+        }
+        if (enabledPlayers.contains(PlayerColor.BLUE)) {
+            players.put(PlayerColor.BLUE, new Player(PlayerColor.BLUE, 0, 10));
+        }
+    }
+
+    public void setPlayerEnabled(PlayerColor playerColor, boolean selected) {
+        if (selected) {
+            enabledPlayers.add(playerColor);
+        } else {
+            enabledPlayers.remove(playerColor);
+        }
     }
 
     @Override
@@ -154,32 +176,6 @@ public class Players extends KeyAdapter {
         }
     }
 
-    private void setMovementDirection(PlayerColor color, Direction direction,
-            int keyCode) {
-        Player player = players.get(color);
-
-        if (direction == Direction.NONE) {
-            if (latestKeyPresses.getOrDefault(color, 0) == keyCode) {
-                player.setMovementDirection(direction);
-            }
-        } else {
-            player.setMovementDirection(direction);
-            latestKeyPresses.put(color, keyCode);
-        }
-    }
-
-    private void placeBomb(PlayerColor color) {
-        Player player = players.get(color);
-        if (player.isDead()) {
-            return;
-        }
-
-        int x = player.getX();
-        int y = player.getY();
-
-        controller.bombs.placeBomb(player, x, y);
-    }
-
     /**
      * Zabija wszystkich graczy znajdujących się na podanej pozycji.
      *
@@ -212,6 +208,35 @@ public class Players extends KeyAdapter {
         checkWinner();
     }
 
+    private void setMovementDirection(PlayerColor color, Direction direction,
+            int keyCode) {
+        Player player = players.get(color);
+        if (player == null) {
+            return;
+        }
+
+        if (direction == Direction.NONE) {
+            if (latestKeyPresses.getOrDefault(color, 0) == keyCode) {
+                player.setMovementDirection(direction);
+            }
+        } else {
+            player.setMovementDirection(direction);
+            latestKeyPresses.put(color, keyCode);
+        }
+    }
+
+    private void placeBomb(PlayerColor color) {
+        Player player = players.get(color);
+        if (player == null || player.isDead()) {
+            return;
+        }
+
+        int x = player.getX();
+        int y = player.getY();
+
+        controller.bombs.placeBomb(player, x, y);
+    }
+
     /**
      * Sprawdza czy ktoś wygrał.
      */
@@ -231,10 +256,6 @@ public class Players extends KeyAdapter {
             }
         }
 
-        if (alivePlayersCount == 1) {
-            controller.announceWinner(lastAlivePlayer);
-        } else {
-            controller.announceDraw();
-        }
+        controller.announceWinner(lastAlivePlayer);
     }
 }

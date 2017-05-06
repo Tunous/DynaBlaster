@@ -7,18 +7,17 @@ import javax.swing.JPanel;
 public class GameController {
 
     private boolean gameOver = false;
-    private MainFrame frame;
+    private final MainFrame frame;
 
     public final Grid grid;
     public final Bombs bombs;
     public final Players players;
 
-    public GameController() {
+    public GameController(MainFrame frame) {
+        this.frame = frame;
         grid = new Grid(this);
         bombs = new Bombs(this);
         players = new Players(this);
-
-        newGame();
     }
 
     public final void newGame() {
@@ -27,10 +26,11 @@ public class GameController {
         players.resetPlayers();
 
         gameOver = false;
+        frame.showGamePanel();
     }
-
-    public void setFrame(MainFrame frame) {
-        this.frame = frame;
+    
+    public void selectPlayers() {
+        frame.showPlayerSelectionPanel();
     }
 
     public void registerKeyListener(JPanel panel) {
@@ -39,12 +39,7 @@ public class GameController {
 
     public void announceWinner(Player player) {
         gameOver = true;
-        frame.showVictoryScreen(player);
-    }
-
-    public void announceDraw() {
-        gameOver = true;
-        frame.showVictoryScreen(null);
+        frame.showEndPanel(player);
     }
 
     public void update() {

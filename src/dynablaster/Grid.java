@@ -40,6 +40,8 @@ public class Grid {
         destructible = toolkit.getImage("res/destructible.png");
         powerupBombImage = toolkit.getImage("res/powerup-bomb.png");
         powerupRangeImage = toolkit.getImage("res/powerup-range.png");
+        
+        generateGrid();
     }
 
     public void newGame() {
